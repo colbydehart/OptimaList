@@ -1,7 +1,8 @@
 ﻿THESE ARE YOUR RECIPES
 <ul>
     <li ng-repeat="recipe in recipes">
-        {{recipe.name}}
+        {{recipe.Name}}
+        <button ng-click="deleteRecipe(recipe)">&times;</button>
     </li>
 
     <form ng-submit="createRecipe()">

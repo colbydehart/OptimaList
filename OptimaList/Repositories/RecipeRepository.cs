@@ -1,11 +1,11 @@
-﻿using GroceryList.Models;
+﻿using OptimaList.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace GroceryList.Repositories
+namespace OptimaList.Repositories
 {
     public class RecipeRepository : IRecipeRepository, IDisposable
     {
@@ -19,7 +19,7 @@ namespace GroceryList.Repositories
             _ctx.Dispose();
         }
 
-        public List<Recipe> AllRecipes(int uid)
+        public List<Recipe> AllRecipes(string uid)
         {
             var q = from r in _ctx.Recipes
                     where r.UserId == uid
@@ -35,9 +35,11 @@ namespace GroceryList.Repositories
             _ctx.SaveChanges();
         }
 
-        public void DeleteRecipe(Recipe recipe)
+        public void DeleteRecipe(int id)
         {
-            _ctx.Recipes.Remove(recipe);
+
+            Recipe rec = _ctx.Recipes.Where(r => r.ID == id).First();
+            _ctx.Recipes.Remove(rec);
             _ctx.SaveChanges();
         }
 

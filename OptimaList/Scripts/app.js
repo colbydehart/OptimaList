@@ -5,6 +5,12 @@ angular.module('OptimaList', ['restangular', 'ngRoute', 'LocalStorageModule'])
     $httpProvider.interceptors.push('authInterceptorFactory');
 
     RestangularProvider.setBaseUrl('/api');
+    RestangularProvider.setRestangularFields({ id: "ID" });
+    RestangularProvider.setRequestInterceptor(function(el, op){
+        if(op === 'remove')
+            return null;
+        return el;
+    });
 
     $routeProvider.when('/', {
         controller: 'HomeController',
@@ -18,12 +24,14 @@ angular.module('OptimaList', ['restangular', 'ngRoute', 'LocalStorageModule'])
 .controller('HomeController', ['$scope', function ($scope)  {
     $scope.messages = ["Hello", "World"];
 }])
+/************************************************
+                AUTH INTERCEPTOR
+************************************************/
 .factory('authInterceptorFactory', ['$location', '$q', 'localStorageService', 
                             function($location,   $q,   localStorageService){
     return {
         request: function(config){
             config.headers = config.headers || {};
-            console.log(config);
 
             var authData = localStorageService.get('auth')
 
@@ -144,21 +152,34 @@ angular.module('OptimaList')
 ************************************************/
 .controller('RecipeController', ['$scope', 'recipeService', function($scope, recipeService){
     $scope.newRecipe = {};
-    recipeService.allRecipes().then(function(recipes) {
-        $scope.recipes = recipes;
-        $scope.message = "Hi";
-    }, function(err) {
-        console.log('boo', err);
-    });
+    getRecipes();
 
+    //CREATE
     $scope.createRecipe = function(){
         recipeService.createRecipe($scope.newRecipe).then(function(){
-            console.log("Yayy, recipe made");
+            getRecipes();
         }, function(err) {
             console.log('Booo', err);
         });
         $scope.newRecipe = {};
-   };
+    };
+    //DELETE
+    $scope.deleteRecipe = function(recipe){
+        recipe.remove().then(function(){
+            getRecipes();
+        }, function(err){
+            console.log("ERR ", err);
+        }); 
+    };
+    ///GET RECIPES
+    function getRecipes(){
+        recipeService.allRecipes().then(function(recipes) {
+            $scope.recipes = recipes;
+        }, function(err) {
+            console.log('boo', err);
+        });
+    }
+
 }]);
 
 angular.module('OptimaList')
@@ -166,12 +187,16 @@ angular.module('OptimaList')
     var recipeService = {};
 
     var _baseRecipes = Restangular.all('recipes');
+
     var _allRecipes = function(){
         return _baseRecipes.getList();
     };
+
     var _createRecipe = function(recipe){
         return _baseRecipes.post(recipe);
     };
+    
+
 
     recipeService.allRecipes = _allRecipes;
     recipeService.createRecipe = _createRecipe;

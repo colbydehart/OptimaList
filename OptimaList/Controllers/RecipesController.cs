@@ -5,6 +5,8 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using Microsoft.AspNet.Identity;
+using OptimaList.Models;
+using OptimaList.Repositories;
 
 namespace OptimaList.Controllers
 {
@@ -12,11 +14,13 @@ namespace OptimaList.Controllers
     [Authorize]
     public class RecipesController : ApiController
     {
+        public RecipeRepository _repo = new RecipeRepository();
+
         [Route("")]
-        public IEnumerable<string> Get()
+        public IEnumerable<Recipe> Get()
         {
             var uid = User.Identity.GetUserId();
-            return new string[] { "value1", "value2", uid };
+            return _repo.AllRecipes(uid);
         }
 
         // GET api/values/5
@@ -25,9 +29,12 @@ namespace OptimaList.Controllers
             return "value";
         }
 
-        // POST api/values
-        public void Post([FromBody]string value)
+        [Route("")]
+        [HttpPost]
+        public void Post([FromBody]Recipe recipe)
         {
+            recipe.UserId = User.Identity.GetUserId();
+            _repo.CreateRecipe(recipe);
         }
 
         // PUT api/values/5
@@ -36,8 +43,11 @@ namespace OptimaList.Controllers
         }
 
         // DELETE api/values/5
+        [HttpDelete]
+        [Route("{id}")]
         public void Delete(int id)
         {
+            _repo.DeleteRecipe(id);
         }
     }
 }

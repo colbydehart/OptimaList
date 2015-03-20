@@ -2,15 +2,15 @@
 using System.Linq;
 using Effort;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using GroceryList.Repositories;
-using GroceryList.Models;
+using OptimaList.Repositories;
+using OptimaList.Models;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
 using System.Data.Entity.Infrastructure;
 using System.Data.Common;
 
-namespace GroceryList.Tests.Repositories
+namespace OptimaList.Tests.Repositories
 {
     [TestClass]
     public class RecipeRepositoryTest
@@ -41,8 +41,7 @@ namespace GroceryList.Tests.Repositories
         [TestMethod]
         public void DeleteRecipeTest()
         {
-            var rc = repo.AllRecipes("1")[0];
-            repo.DeleteRecipe(rc);
+            repo.DeleteRecipe(1);
             Assert.AreEqual(1, repo.AllRecipes("1").Count);
         }
 

@@ -6,12 +6,12 @@ using System.Data.Entity;
 using System.ComponentModel.DataAnnotations;
 using System.Data.Common;
 
-namespace GroceryList.Models
+namespace OptimaList.Models
 {
     public class Recipe
     {
         public int ID { get; set; }
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         [Required, DataType(DataType.Url)]
         public string Url { get; set; }
         [Required]

@@ -11,19 +11,32 @@ angular.module('OptimaList')
 ************************************************/
 .controller('RecipeController', ['$scope', 'recipeService', function($scope, recipeService){
     $scope.newRecipe = {};
-    recipeService.allRecipes().then(function(recipes) {
-        $scope.recipes = recipes;
-        $scope.message = "Hi";
-    }, function(err) {
-        console.log('boo', err);
-    });
+    getRecipes();
 
+    //CREATE
     $scope.createRecipe = function(){
         recipeService.createRecipe($scope.newRecipe).then(function(){
-            console.log("Yayy, recipe made");
+            getRecipes();
         }, function(err) {
             console.log('Booo', err);
         });
         $scope.newRecipe = {};
-   };
+    };
+    //DELETE
+    $scope.deleteRecipe = function(recipe){
+        recipe.remove().then(function(){
+            getRecipes();
+        }, function(err){
+            console.log("ERR ", err);
+        }); 
+    };
+    ///GET RECIPES
+    function getRecipes(){
+        recipeService.allRecipes().then(function(recipes) {
+            $scope.recipes = recipes;
+        }, function(err) {
+            console.log('boo', err);
+        });
+    }
+
 }]);

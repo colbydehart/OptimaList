@@ -5,6 +5,12 @@
     $httpProvider.interceptors.push('authInterceptorFactory');
 
     RestangularProvider.setBaseUrl('/api');
+    RestangularProvider.setRestangularFields({ id: "ID" });
+    RestangularProvider.setRequestInterceptor(function(el, op){
+        if(op === 'remove')
+            return null;
+        return el;
+    });
 
     $routeProvider.when('/', {
         controller: 'HomeController',
@@ -18,12 +24,14 @@
 .controller('HomeController', ['$scope', function ($scope)  {
     $scope.messages = ["Hello", "World"];
 }])
+/************************************************
+                AUTH INTERCEPTOR
+************************************************/
 .factory('authInterceptorFactory', ['$location', '$q', 'localStorageService', 
                             function($location,   $q,   localStorageService){
     return {
         request: function(config){
             config.headers = config.headers || {};
-            console.log(config);
 
             var authData = localStorageService.get('auth')
 
