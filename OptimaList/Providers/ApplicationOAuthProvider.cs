@@ -48,6 +48,7 @@ namespace OptimaList.Providers
             AuthenticationTicket ticket = new AuthenticationTicket(oAuthIdentity, properties);
             context.Validated(ticket);
             context.Request.Context.Authentication.SignIn(cookiesIdentity);
+            context.OwinContext.Response.Headers.Add("Access-Control-Allow-Origin", new[] { "*" });
         }
 
         public override Task TokenEndpoint(OAuthTokenEndpointContext context)

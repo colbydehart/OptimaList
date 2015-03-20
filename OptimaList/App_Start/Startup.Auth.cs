@@ -10,6 +10,7 @@ using Microsoft.Owin.Security.OAuth;
 using Owin;
 using OptimaList.Providers;
 using OptimaList.Models;
+using Microsoft.Owin.Security;
 
 namespace OptimaList
 {
@@ -39,11 +40,13 @@ namespace OptimaList
                 Provider = new ApplicationOAuthProvider(PublicClientId),
                 AuthorizeEndpointPath = new PathString("/api/Account/ExternalLogin"),
                 AccessTokenExpireTimeSpan = TimeSpan.FromDays(14),
-                AllowInsecureHttp = true
+                AllowInsecureHttp = true,
+                AuthenticationMode = AuthenticationMode.Active
             };
 
             // Enable the application to use bearer tokens to authenticate users
             app.UseOAuthBearerTokens(OAuthOptions);
+            app.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll);
 
             // Uncomment the following lines to enable logging in with third party login providers
             //app.UseMicrosoftAccountAuthentication(
