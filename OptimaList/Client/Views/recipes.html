@@ -1,13 +1,23 @@
-﻿THESE ARE YOUR RECIPES
-<ul>
-    <li ng-repeat="recipe in recipes">
-        {{recipe.Name}}
-        <button ng-click="deleteRecipe(recipe)">&times;</button>
-    </li>
+﻿<h2>Your Recipes</h2>
 
-    <form ng-submit="createRecipe()">
-        <input type="text" ng-model="newRecipe.name"/>
-        <input type="text" ng-model="newRecipe.url"/>
-        <button type="submit">Enter</button>
-    </form>
+<table class="table table-striped">
+    <tr>
+        <th></th>
+        <th>Name</th>
+        <th>Url</th>
+        <th></th>
+    </tr>
+    <tr ng-repeat="recipe in recipes">
+        <td>{{$index}}</td>
+        <td>{{recipe.Name}}</td>
+        <td>{{recipe.Url}}</td>
+        <td>
+            <button class="btn btn-danger" ng-click="deleteRecipe(recipe)">
+                delete
+            </button>
+        </td>
+    </tr>
+</table>
+    <button class="btn btn-primary" ng-click="showForm = !showForm">Add Recipe</button>
+    <add-form ng-show="showForm" />
 </ul>

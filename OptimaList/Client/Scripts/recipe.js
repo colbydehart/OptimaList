@@ -11,6 +11,7 @@ angular.module('OptimaList')
 ************************************************/
 .controller('RecipeController', ['$scope', 'recipeService', function($scope, recipeService){
     $scope.newRecipe = {};
+    $scope.showForm = false;
     getRecipes();
 
     //CREATE

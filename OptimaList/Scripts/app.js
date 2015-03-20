@@ -140,6 +140,14 @@ angular.module('OptimaList')
 }]);
 
 angular.module('OptimaList')
+.directive('addForm', [function(){
+    return {
+        templateUrl: "/Client/Directives/addForm.html",
+        restrict: 'E'
+    };
+}]);
+
+angular.module('OptimaList')
 .config(['$routeProvider', function($routeProvider) {
     $routeProvider
     .when('/recipes', {
@@ -152,6 +160,7 @@ angular.module('OptimaList')
 ************************************************/
 .controller('RecipeController', ['$scope', 'recipeService', function($scope, recipeService){
     $scope.newRecipe = {};
+    $scope.showForm = false;
     getRecipes();
 
     //CREATE
