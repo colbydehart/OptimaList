@@ -14,15 +14,6 @@ angular.module('OptimaList')
     $scope.showForm = false;
     getRecipes();
 
-    //CREATE
-    $scope.createRecipe = function(){
-        recipeService.createRecipe($scope.newRecipe).then(function(){
-            getRecipes();
-        }, function(err) {
-            console.log('Booo', err);
-        });
-        $scope.newRecipe = {};
-    };
     //DELETE
     $scope.deleteRecipe = function(recipe){
         recipe.remove().then(function(){

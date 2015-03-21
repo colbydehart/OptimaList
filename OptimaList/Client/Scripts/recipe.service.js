@@ -1,5 +1,5 @@
 angular.module('OptimaList')
-.factory('recipeService', ['Restangular', function(Restangular){
+.factory('recipeService', ['Restangular', '$http', '$q', function(Restangular, $http, $q){
     var recipeService = {};
 
     var _baseRecipes = Restangular.all('recipes');
@@ -8,12 +8,16 @@ angular.module('OptimaList')
         return _baseRecipes.getList();
     };
 
-    var _createRecipe = function(recipe){
-        return _baseRecipes.post(recipe);
+    var _createRecipe = function(rec, ings){
+        return _baseRecipes.post({recipe: rec, ingredients: ings});
     };
+
+    var _getRecipe = function(id){
+        return _baseRecipes.get(id);
+    };
+
     
-
-
+    recipeService.getRecipe = _getRecipe;
     recipeService.allRecipes = _allRecipes;
     recipeService.createRecipe = _createRecipe;
     return recipeService;

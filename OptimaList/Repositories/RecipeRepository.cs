@@ -37,7 +37,6 @@ namespace OptimaList.Repositories
 
         public void DeleteRecipe(int id)
         {
-
             Recipe rec = _ctx.Recipes.Where(r => r.ID == id).First();
             _ctx.Recipes.Remove(rec);
             _ctx.SaveChanges();
@@ -52,6 +51,24 @@ namespace OptimaList.Repositories
             return q.First<Recipe>();
         }
 
+        public Ingredient GetOrCreateIngredient(string name)
+        {
+            name = name.Trim(' ', '_', '\n', '\r').ToLower();
+            if (_ctx.Ingredients.Any(i => i.Name == name))
+            {
+                return _ctx.Ingredients.Single(i => i.Name == name);
+            }
+            var ing = new Ingredient { Name = name };
+            _ctx.Ingredients.Add(ing);
+            _ctx.SaveChanges();
+            return ing;
+        }
+
+        public void AddRecipeItem(RecipeItem ri)
+        {
+            _ctx.RecipeItems.Add(ri);
+            _ctx.SaveChanges();
+        }
 
 
         //public ShoppingList GetOptimalList(string uid, int numOfRecipes)
@@ -72,6 +89,7 @@ namespace OptimaList.Repositories
         //{
         //    var res = new List<List<RecipeItem>>();
         //}
+
 
     }
 }

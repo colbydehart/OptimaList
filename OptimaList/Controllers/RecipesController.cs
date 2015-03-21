@@ -7,6 +7,7 @@ using System.Web.Http;
 using Microsoft.AspNet.Identity;
 using OptimaList.Models;
 using OptimaList.Repositories;
+using Newtonsoft.Json.Linq;
 
 namespace OptimaList.Controllers
 {
@@ -24,20 +25,43 @@ namespace OptimaList.Controllers
         }
 
         // GET api/values/5
-        public string Get(int id)
+        [Route("{id}")]
+        public Recipe Get(int id)
         {
-            return "value";
+            return _repo.GetRecipeById(id);
         }
 
         [Route("")]
         [HttpPost]
-        public void Post([FromBody]Recipe recipe)
+        public Recipe Post(JObject request)
         {
+            dynamic req = request;
+            Recipe recipe = new Recipe { Name = req.recipe.Name, Url = req.recipe.Url };
             recipe.UserId = User.Identity.GetUserId();
             _repo.CreateRecipe(recipe);
+            foreach (dynamic ing in (JArray)req.ingredients)
+            {
+                var ri = new RecipeItem
+                {
+                    Ingredient = _repo.GetOrCreateIngredient((string)ing.Name),
+                    quantity = (decimal)ing.Quantity,
+                    measurement = (string)ing.Measurement,
+                    Recipe = recipe
+                };
+                _repo.AddRecipeItem(ri);
+            }
+
+            return recipe;
         }
 
-        // PUT api/values/5
+        [HttpPost]
+        [Route("Ingredient")]
+        public Ingredient GetIngredient(string name)
+        {
+            return _repo.GetOrCreateIngredient(name);
+        }
+
+
         public void Put(int id, [FromBody]string value)
         {
         }

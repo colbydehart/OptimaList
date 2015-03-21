@@ -21,8 +21,12 @@ angular.module('OptimaList', ['restangular', 'ngRoute', 'LocalStorageModule'])
 /************************************************
                 HOME CONTROLLER
 ************************************************/
-.controller('HomeController', ['$scope', function ($scope)  {
-    $scope.messages = ["Hello", "World"];
+.controller('HomeController', ['localStorageService', '$location', function (localStorageService, $location)  {
+    var auth = localStorageService.get('auth');
+    if (auth){
+        $location.path('recipes')
+    }
+
 }])
 /************************************************
                 AUTH INTERCEPTOR
@@ -140,10 +144,71 @@ angular.module('OptimaList')
 }]);
 
 angular.module('OptimaList')
-.directive('addForm', [function(){
+.config(['$routeProvider', function($routeProvider) {
+    $routeProvider
+    .when('/recipes/:id', {
+        controller: 'DetailsController',
+        templateUrl: '/Client/Views/detail.html'
+    });
+}])
+.controller('DetailsController', ['$scope', 'recipeService', '$routeParams', 
+                          function($scope,   recipeService,   $routeParams){
+    var id = $routeParams.id;
+    recipeService.getRecipe(id).then(function(recipe) {
+        $scope.recipe = recipe;
+    });
+}]);
+
+angular.module('OptimaList')
+.directive('addForm', ['recipeService', function(recipeService){
+
+    var _link = function(scope, el, attrs){
+        scope.newRecipe = {};
+        scope.ingredients = [{
+            Name: "",
+            Quantity:1,
+            Measurement:"cups"
+        }];
+
+        //CREATE RECIPE
+        scope.addRecipe = function(){
+            scope.ingredients = scope.ingredients.slice(0,-1);
+            recipeService.createRecipe(scope.newRecipe, scope.ingredients).then(function(data){
+                return recipeService.allRecipes();
+            }, console.log).then(function(data) {
+                scope.recipes = data;
+            }).catch(console.log);
+            scope.newRecipe = {};
+            scope.ingredients = [{
+                Name: "",
+                Quantity:1,
+                Measurement:"cups"
+            }];
+            scope.showForm = false;
+        };
+
+        scope.$watch('ingredients', function(value){
+            var len = value.length;
+            if(value[len-1].Name != ""){
+                value.push({
+                    Name: "",
+                    Quantity:1,
+                    Measurement:"cups"
+                });
+            }
+            else if(value[len-1].Name === "" &&
+                    value[len-2] && 
+                    value[len-2].Name ===""){
+                value.pop();
+            }
+        }, true);
+
+    };
+
     return {
         templateUrl: "/Client/Directives/addForm.html",
-        restrict: 'E'
+        restrict: 'E',
+        link : _link
     };
 }]);
 
@@ -163,15 +228,6 @@ angular.module('OptimaList')
     $scope.showForm = false;
     getRecipes();
 
-    //CREATE
-    $scope.createRecipe = function(){
-        recipeService.createRecipe($scope.newRecipe).then(function(){
-            getRecipes();
-        }, function(err) {
-            console.log('Booo', err);
-        });
-        $scope.newRecipe = {};
-    };
     //DELETE
     $scope.deleteRecipe = function(recipe){
         recipe.remove().then(function(){
@@ -192,7 +248,7 @@ angular.module('OptimaList')
 }]);
 
 angular.module('OptimaList')
-.factory('recipeService', ['Restangular', function(Restangular){
+.factory('recipeService', ['Restangular', '$http', '$q', function(Restangular, $http, $q){
     var recipeService = {};
 
     var _baseRecipes = Restangular.all('recipes');
@@ -201,12 +257,16 @@ angular.module('OptimaList')
         return _baseRecipes.getList();
     };
 
-    var _createRecipe = function(recipe){
-        return _baseRecipes.post(recipe);
+    var _createRecipe = function(rec, ings){
+        return _baseRecipes.post({recipe: rec, ingredients: ings});
     };
+
+    var _getRecipe = function(id){
+        return _baseRecipes.get(id);
+    };
+
     
-
-
+    recipeService.getRecipe = _getRecipe;
     recipeService.allRecipes = _allRecipes;
     recipeService.createRecipe = _createRecipe;
     return recipeService;

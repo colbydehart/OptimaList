@@ -1,0 +1,16 @@
+<h1>
+    {{recipe.Name}}
+</h1>
+<table class="table-striped table">
+    <h2>Ingredients</h2>
+    <tr>
+        <th>Name</th>
+        <th>Quantity</th>
+        <th>Measurement</th>
+    </tr>
+    <tr ng-repeat="item in recipe.RecipeItems">
+        <td> {{item.Ingredient.Name}} </td>
+        <td> {{item.measurement}} </td>
+        <td> {{item.quantity}} </td>
+    </tr>
+</table>

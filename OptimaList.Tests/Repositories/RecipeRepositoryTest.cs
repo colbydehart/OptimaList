@@ -54,6 +54,25 @@ namespace OptimaList.Tests.Repositories
             Assert.AreEqual("Popcorn", rd.Name);
         }
 
+        [TestMethod]
+        public void GetIngredientThatExists()
+        {
+            Assert.AreEqual(1, repo.GetOrCreateIngredient("potato"));
+        }
+        
+        [TestMethod]
+        public void GetIngredientThatExistsWithExtraFormatting()
+        {
+            Assert.AreEqual(1, repo.GetOrCreateIngredient(" \n Potato"));
+        }
+
+        [TestMethod]
+        public void GetIngredientThatDoesntExists()
+        {
+            Assert.AreEqual(6, repo.GetOrCreateIngredient("bratwurst"));
+
+        }
+
         //[TestMethod]
         //public void GetOptimalListTest()
         //{
@@ -100,11 +119,11 @@ namespace OptimaList.Tests.Repositories
                 };
                 context.Recipes.AddRange(new List<Recipe>{ chow, bp, pc });
 
-                var po = new Ingredient { Name = "Potato", ID = 1 };
-                var bt = new Ingredient { Name = "Butter", ID = 2 };
-                var sc = new Ingredient { Name = "Sour Cream", ID = 3 };
-                var cn = new Ingredient { Name = "Corn", ID = 4 };
-                var br = new Ingredient { Name = "Broth", ID = 5 };
+                var po = new Ingredient { Name = "potato", ID = 1 };
+                var bt = new Ingredient { Name = "butter", ID = 2 };
+                var sc = new Ingredient { Name = "sour Cream", ID = 3 };
+                var cn = new Ingredient { Name = "corn", ID = 4 };
+                var br = new Ingredient { Name = "broth", ID = 5 };
 
                 context.Ingredients.AddRange(new List<Ingredient> { po, bt, sc, cn, br });
                 context.SaveChanges();

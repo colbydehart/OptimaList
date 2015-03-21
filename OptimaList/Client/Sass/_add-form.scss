@@ -1,4 +1,16 @@
 add-form{
-    background-color:blue;
-    color: red;
+    position:fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.2);
+    form{
+        padding: 2rem;
+        border-radius: 30px;
+        position: relative;
+        width: 600px;
+        margin: 4rem auto;
+        background-color: $lg;
+    }
 }

@@ -13,6 +13,7 @@ namespace OptimaList.Repositories
         void CreateRecipe(Recipe recipe);
         void DeleteRecipe(int id);
         Recipe GetRecipeById(int id);
+        Ingredient GetOrCreateIngredient(string name);
         //ShoppingList GetOptimalList(string uid, int numOfRecipes);
     }
 }

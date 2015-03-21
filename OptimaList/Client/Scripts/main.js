@@ -21,8 +21,12 @@
 /************************************************
                 HOME CONTROLLER
 ************************************************/
-.controller('HomeController', ['$scope', function ($scope)  {
-    $scope.messages = ["Hello", "World"];
+.controller('HomeController', ['localStorageService', '$location', function (localStorageService, $location)  {
+    var auth = localStorageService.get('auth');
+    if (auth){
+        $location.path('recipes')
+    }
+
 }])
 /************************************************
                 AUTH INTERCEPTOR

@@ -9,7 +9,7 @@
     </tr>
     <tr ng-repeat="recipe in recipes">
         <td>{{$index}}</td>
-        <td>{{recipe.Name}}</td>
+        <td><a href="#/recipes/{{recipe.ID}}">{{recipe.Name}}</a></td>
         <td>{{recipe.Url}}</td>
         <td>
             <button class="btn btn-danger" ng-click="deleteRecipe(recipe)">
