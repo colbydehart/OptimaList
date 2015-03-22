@@ -9,6 +9,7 @@ using System.Data.Entity;
 using System.IO;
 using System.Data.Entity.Infrastructure;
 using System.Data.Common;
+using System.Diagnostics;
 
 namespace OptimaList.Tests.Repositories
 {
@@ -16,7 +17,7 @@ namespace OptimaList.Tests.Repositories
     public class RecipeRepositoryTest
     {
 
-        private RecipeRepository repo;
+        static private RecipeRepository repo;
 
 
         [TestMethod]
@@ -28,120 +29,133 @@ namespace OptimaList.Tests.Repositories
         [TestMethod]
         public void CreateRecipeTest()
         {
-            repo.CreateRecipe(new Recipe { 
-                Name = "pasta", 
-                Url = "Pas.ta", 
-                UserId="1"
-            });
+            var rec = new Recipe
+            {
+                Name = "pasta",
+                Url = "Pas.ta",
+                UserId = "1"
+            };
+            repo.CreateRecipe(rec);
             Assert.AreEqual(3, repo.AllRecipes("1").Count);
             var url = repo.AllRecipes("1").Where<Recipe>(r => r.Name == "pasta").Single().Url;
             Assert.AreEqual("Pas.ta", url);
+            repo.DeleteRecipe(rec.ID);
+
         }
 
         [TestMethod]
         public void DeleteRecipeTest()
         {
-            repo.DeleteRecipe(1);
-            Assert.AreEqual(1, repo.AllRecipes("1").Count);
+            var n = repo.AllRecipes("1").Count;
+            var rc = new Recipe { Name = "sti", Url = "ng", UserId = "1" };
+            repo.CreateRecipe(rc);
+            repo.DeleteRecipe(rc.ID);
+            Assert.AreEqual(n, repo.AllRecipes("1").Count);
         }
 
         [TestMethod]
         public void GetRecipeByIdTest()
         {
-            var rc = repo.GetRecipeById(1);
-            Assert.AreEqual("Baked Potato", rc.Name);
-            var rd = repo.GetRecipeById(2);
-            Assert.AreEqual("Popcorn", rd.Name);
+            var rc = new Recipe { Name = "Rargh", Url= "Cool.dog" };
+            repo.CreateRecipe(rc);
+            Assert.AreEqual("Rargh", repo.GetRecipeById(rc.ID).Name);
+            repo.DeleteRecipe(rc.ID);
         }
 
         [TestMethod]
         public void GetIngredientThatExists()
         {
-            Assert.AreEqual(1, repo.GetOrCreateIngredient("potato"));
+            Assert.AreEqual(1, repo.GetOrCreateIngredient("potato").ID);
         }
         
         [TestMethod]
         public void GetIngredientThatExistsWithExtraFormatting()
         {
-            Assert.AreEqual(1, repo.GetOrCreateIngredient(" \n Potato"));
+            Assert.AreEqual(1, repo.GetOrCreateIngredient(" \n Potato").ID);
         }
 
         [TestMethod]
         public void GetIngredientThatDoesntExists()
         {
-            Assert.AreEqual(6, repo.GetOrCreateIngredient("bratwurst"));
+            Assert.AreEqual(6, repo.GetOrCreateIngredient("bratwurst").ID);
 
         }
 
-        //[TestMethod]
-        //public void GetOptimalListTest()
-        //{
-        //    var ls = repo.GetOptimalList("1", 2);
-        //    Assert.AreEqual(4, ls.Items.Count);
-        //    var item = new ShoppingListItem
-        //    {
-        //        Name = "Butter",
-        //        amount = 2.0M,
-        //        Measurement = "cup",
-        //        RecipeIds = new List<int> { 1, 2 }
-        //    };
-        //    Assert.IsTrue(ls.Items.Contains(item));
-        //}
-
-
-        [TestInitialize]
-        public void testSetup()
+        [TestMethod]
+        public void GetOptimalListTest()
         {
-            DbConnection connection = Effort.DbConnectionFactory.CreateTransient();
-            using (var context = new RecipeDbContext(connection))
+            var ls = repo.GetOptimalList("1", 2);
+            Assert.AreEqual(4, ls.Count());
+        }
+
+        [TestMethod]
+        public void GetNumIngsTest()
+        {
+            var ls = repo.AllRecipes("1");
+
+            Assert.AreEqual(4, repo.NumberOfIngredients(ls));
+        }
+
+        [ClassCleanup]
+        static public void testBreakdown()
+        {
+            var context = new RecipeDbContext();
+            context.Database.Delete();
+
+        }
+
+        [ClassInitialize]
+        static public void testSetup(TestContext _testctx)
+        {
+            //DbConnection connection = Effort.DbConnectionFactory.CreateTransient();
+            using (var context = new RecipeDbContext())
             {
                 context.Database.CreateIfNotExists();
                 var bp = new Recipe
                 {
                     Name = "Baked Potato",
-                    ID = 1,
                     Url = "Baked.potato",
                     UserId = "1",
                 };
                 var pc = new Recipe
                 {
                     Name = "Popcorn",
-                    ID = 2,
                     Url = "Pop.Corn",
                     UserId = "1",
                 };
                 var chow = new Recipe
                 {
                     Name = "Chowder",
-                    ID = 3,
                     Url = "Chow.der",
                     UserId = "2",
                 };
-                context.Recipes.AddRange(new List<Recipe>{ chow, bp, pc });
+                context.Recipes.AddRange(new List<Recipe> { chow, bp, pc });
+                context.SaveChanges();
 
-                var po = new Ingredient { Name = "potato", ID = 1 };
-                var bt = new Ingredient { Name = "butter", ID = 2 };
-                var sc = new Ingredient { Name = "sour Cream", ID = 3 };
-                var cn = new Ingredient { Name = "corn", ID = 4 };
-                var br = new Ingredient { Name = "broth", ID = 5 };
+                var po = new Ingredient { Name = "potato"};
+                var bt = new Ingredient { Name = "butter"};
+                var sc = new Ingredient { Name = "sour Cream"};
+                var cn = new Ingredient { Name = "corn"};
+                var br = new Ingredient { Name = "broth"};
 
                 context.Ingredients.AddRange(new List<Ingredient> { po, bt, sc, cn, br });
                 context.SaveChanges();
 
                 context.RecipeItems.AddRange(new List<RecipeItem>
                 {
-                    new RecipeItem {ID = 1, quantity=1, measurement="cup", Ingredient=po, Recipe=bp},
-                    new RecipeItem {ID = 2, quantity=1, measurement="cup", Ingredient=bt, Recipe=bp},
-                    new RecipeItem {ID = 3, quantity=1, measurement="cup", Ingredient=sc, Recipe=bp},
-                    new RecipeItem {ID = 4, quantity=1, measurement="cup", Ingredient=bt, Recipe=pc},
-                    new RecipeItem {ID = 5, quantity=1, measurement="cup", Ingredient=cn, Recipe=bp},
-                    new RecipeItem {ID = 6, quantity=1, measurement="cup", Ingredient=br, Recipe=chow},
-                    new RecipeItem {ID = 7, quantity=1, measurement="cup", Ingredient=cn, Recipe=chow}
+                    new RecipeItem {ID = 1, quantity=1, measurement="cup", Recipe= bp, Ingredient=po},
+                    new RecipeItem {ID = 2, quantity=1, measurement="cup", Recipe= bp, Ingredient=bt}, 
+                    new RecipeItem {ID = 3, quantity=1, measurement="cup", Recipe= bp, Ingredient=sc}, 
+                    new RecipeItem {ID = 4, quantity=1, measurement="cup", Recipe= pc, Ingredient=bt},
+                    new RecipeItem {ID = 5, quantity=1, measurement="cup", Recipe= pc, Ingredient=cn}, 
+                    new RecipeItem {ID = 6, quantity=1, measurement="cup", Recipe= chow, Ingredient=cn},  
+                    new RecipeItem {ID = 7, quantity=1, measurement="cup", Recipe= chow, Ingredient=br}  
                 });
                 context.SaveChanges();
             }
 
-            repo = new RecipeRepository(new RecipeDbContext(connection));
+            repo = new RecipeRepository(new RecipeDbContext());
+
         }
     }
 }

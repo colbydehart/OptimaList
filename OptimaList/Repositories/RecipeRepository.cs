@@ -1,4 +1,5 @@
-﻿using OptimaList.Models;
+﻿using Newtonsoft.Json.Linq;
+using OptimaList.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,6 +40,7 @@ namespace OptimaList.Repositories
         {
             Recipe rec = _ctx.Recipes.Where(r => r.ID == id).First();
             _ctx.Recipes.Remove(rec);
+            _ctx.RecipeItems.RemoveRange(_ctx.RecipeItems.Where(i => i.RecipeId == id));
             _ctx.SaveChanges();
         }
 
@@ -71,25 +73,58 @@ namespace OptimaList.Repositories
         }
 
 
-        //public ShoppingList GetOptimalList(string uid, int numOfRecipes)
-        //     throw System.NotImplementedException();
-        //{
-        //    var q = from r in _ctx.Recipes
-        //            where r.UserId == uid
-        //            select r;
-        //    //var combos = GetRecipeCombinations(q.ToList<Recipe>(), numOfRecipes);
+        public JArray GetOptimalList(string uid, int r)
+        {
+            var recipes = from rec in _ctx.Recipes
+                    where rec.UserId == uid
+                    select rec;
 
-        //    //ShoppingList OptimaList;
-        //    //foreach (List<Recipe> combo in combos){
+            var pool = recipes.ToList();
+            var n = pool.Count;
+            var res = new JArray();
 
-        //    }
-        //}
+            if (r > n ){
+                res.Add("Not enough elements");
+                return res;
+            }
 
-        //private List<List<Recipe>> GetRecipeCombinations(List<Recipe> ls, int numOfRecipes)
-        //{
-        //    var res = new List<List<RecipeItem>>();
-        //}
+            var indices = Enumerable.Range(0, r).ToList();
 
+            var bestCombo = (from i in indices select pool[i]).ToList<Recipe>();
+            int leastIngs = NumberOfIngredients(bestCombo);
+
+            //Go backwards through array
+            while(indices[0] != n - r){
+                foreach (int i in Enumerable.Range(0, r).Reverse())
+                {
+                    //if current index is (length of pool-1) + its place in indices i
+                    //minus (length of indices -1)
+                    if (indices[i] == i + n - r)
+                        break;
+                    indices[i] += 1;
+                    var curCombo = (from index in indices select pool[index]).ToList();
+                    var curNum = NumberOfIngredients(curCombo);
+                    if (curNum < leastIngs)
+                    {
+                        bestCombo = curCombo;
+                        leastIngs = curNum;
+                    }
+                }
+            }
+
+            return JArray.FromObject(bestCombo);
+
+        }
+
+        public int NumberOfIngredients(List<Recipe> ls)
+        {
+            var q = from rec in ls
+                    from item in rec.RecipeItems
+                    select item.IngredientId;
+
+            return q.Distinct().Count();
+
+        }
 
     }
 }

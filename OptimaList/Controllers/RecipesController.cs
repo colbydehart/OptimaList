@@ -62,8 +62,20 @@ namespace OptimaList.Controllers
         }
 
 
-        public void Put(int id, [FromBody]string value)
+        //TODO
+        //[HttpPut]
+        //[Route("{id}")]
+        //public void Put(int id, [FromBody]Recipe Recipe)
+        //{
+            
+        //}
+
+        [HttpGet]
+        [Route("List")]
+        public JArray GetOptimaList()
         {
+            var uid = User.Identity.GetUserId();
+            return _repo.GetOptimalList(uid, 3);
         }
 
         // DELETE api/values/5

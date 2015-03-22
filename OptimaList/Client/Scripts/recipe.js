@@ -30,5 +30,13 @@ angular.module('OptimaList')
             console.log('boo', err);
         });
     }
+    //GET LIST
+    $scope.getList = function(){
+        recipeService.getOptimaList().then(function(list) {
+            console.log(list);
+        }, function(err) {
+            console.log(err);
+        });
+    };
 
 }]);

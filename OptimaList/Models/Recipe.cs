@@ -46,6 +46,10 @@ namespace OptimaList.Models
         {
             this.Configuration.LazyLoadingEnabled = false;
         }
+        public RecipeDbContext(string connection) : base(connection)
+        {
+            this.Configuration.LazyLoadingEnabled = false;
+        }
     }
 
 }

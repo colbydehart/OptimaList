@@ -244,6 +244,14 @@ angular.module('OptimaList')
             console.log('boo', err);
         });
     }
+    //GET LIST
+    $scope.getList = function(){
+        recipeService.getOptimaList().then(function(list) {
+            console.log(list);
+        }, function(err) {
+            console.log(err);
+        });
+    };
 
 }]);
 
@@ -265,7 +273,12 @@ angular.module('OptimaList')
         return _baseRecipes.get(id);
     };
 
+    var _getOptimaList = function() {
+        return _baseRecipes.get("List");
+    };
+
     
+    recipeService.getOptimaList = _getOptimaList;
     recipeService.getRecipe = _getRecipe;
     recipeService.allRecipes = _allRecipes;
     recipeService.createRecipe = _createRecipe;

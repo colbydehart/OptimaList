@@ -16,7 +16,12 @@ angular.module('OptimaList')
         return _baseRecipes.get(id);
     };
 
+    var _getOptimaList = function() {
+        return _baseRecipes.get("List");
+    };
+
     
+    recipeService.getOptimaList = _getOptimaList;
     recipeService.getRecipe = _getRecipe;
     recipeService.allRecipes = _allRecipes;
     recipeService.createRecipe = _createRecipe;

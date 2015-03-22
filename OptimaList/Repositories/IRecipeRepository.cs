@@ -1,4 +1,5 @@
-﻿using OptimaList.Models;
+﻿using Newtonsoft.Json.Linq;
+using OptimaList.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,6 @@ namespace OptimaList.Repositories
         void DeleteRecipe(int id);
         Recipe GetRecipeById(int id);
         Ingredient GetOrCreateIngredient(string name);
-        //ShoppingList GetOptimalList(string uid, int numOfRecipes);
+        JArray GetOptimalList(string uid, int numOfRecipes);
     }
 }
