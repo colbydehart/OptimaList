@@ -6,7 +6,7 @@ angular.module('OptimaList')
         scope.ingredients = [{
             Name: "",
             Quantity:1,
-            Measurement:"cups"
+            Measurement:"none"
         }];
 
         //CREATE RECIPE
@@ -21,7 +21,7 @@ angular.module('OptimaList')
             scope.ingredients = [{
                 Name: "",
                 Quantity:1,
-                Measurement:"cups"
+                Measurement:"none"
             }];
             scope.showForm = false;
         };

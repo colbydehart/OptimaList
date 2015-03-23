@@ -1,5 +1,4 @@
-﻿using QuantityTypes;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using OptimaList.Models;
 using System;
 using System.Collections.Generic;
@@ -135,8 +134,8 @@ namespace OptimaList.Repositories
                     orderby item.Ingredient.Name
                     select item;
 
-            Dictionary<string, Dictionary<string, double>> res = new Dictionary<string,Dictionary<string,double>>;
-            string[] vols = "cup,tbsp,tsp,quart,floz".Split(',');
+            Dictionary<string, Dictionary<string, decimal>> res = new Dictionary<string, Dictionary<string, decimal>>();
+            string[] vols = "cup,tbsp,tsp,quart,floz,mL,liter,pint,gallon".Split(',');
             string[] masses = "lb,oz,kg,g".Split(',');
             foreach (RecipeItem ri in q)
             {
@@ -154,15 +153,15 @@ namespace OptimaList.Repositories
             return JObject.FromObject(res);
         }
 
-        private void addItem(Dictionary<string, Dictionary<string,double>> res, RecipeItem item, string type)
+        private void addItem(Dictionary<string, Dictionary<string,decimal>> res, RecipeItem item, string type)
         {
             if (res.ContainsKey(item.Ingredient.Name))
             {
-                res[item.Ingredient.Name][type] += ConvertUnits(item.Quantity + " " + item.Measurement, type);
+                res[item.Ingredient.Name][type] += ConvertUnits(item.Quantity, item.Measurement, type);
             }
             else
             {
-                res[item.Ingredient.Name] = new Dictionary<string, double> {
+                res[item.Ingredient.Name] = new Dictionary<string, decimal> {
                     {"mass", 0},
                     {"volume", 0},
                     {"unit", 0},
@@ -171,21 +170,19 @@ namespace OptimaList.Repositories
             }
         }
 
-        private double ConvertUnits(decimal quan, string meas, string type)
+        private decimal ConvertUnits(decimal quan, string meas, string type)
         {
             if (type == "mass")
             {
                 //TODO GET AN ACTUAL WORKING CONVERSION LIBRARY
-                var m = Mass.Parse(quan.ToString() + " " + meas);
-                return m.ConvertTo(Mass.Pound);
+                return Conversions.ConvertToOz(quan, meas);
             }
             else if (type == "volume")
             {
-                var v = Volume.Parse(quan.ToString() + " " + meas);
-                return v.ConvertTo(Volume.Litre);
+                return Conversions.ConvertToCup(quan, meas);
             }
             else
-                return (double)quan;
+                return quan;
             
         }
 
