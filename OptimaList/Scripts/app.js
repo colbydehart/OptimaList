@@ -160,6 +160,19 @@ angular.module('OptimaList')
 }]);
 
 angular.module('OptimaList')
+.directive('groceryList', ['recipeService', function(recipeService){
+    var _link = function(scope, el, attrs){
+
+    };
+
+    return {
+        templateUrl: "/Client/Directives/list.html",
+        restrict: 'E',
+        link : _link
+    };
+}]);
+
+angular.module('OptimaList')
 .directive('addForm', ['recipeService', function(recipeService){
 
     var _link = function(scope, el, attrs){
@@ -167,7 +180,7 @@ angular.module('OptimaList')
         scope.ingredients = [{
             Name: "",
             Quantity:1,
-            Measurement:"cups"
+            Measurement:"none"
         }];
 
         //CREATE RECIPE
@@ -182,7 +195,7 @@ angular.module('OptimaList')
             scope.ingredients = [{
                 Name: "",
                 Quantity:1,
-                Measurement:"cups"
+                Measurement:"none"
             }];
             scope.showForm = false;
         };
@@ -246,8 +259,18 @@ angular.module('OptimaList')
     }
     //GET LIST
     $scope.getList = function(){
+        var newIng = {}
         recipeService.getOptimaList().then(function(list) {
-            console.log(list);
+            for (var ing in list.ingredients){
+                mmts = [];
+                var cur = list.ingredients[ing];
+                if (cur.mass) mmts.push(cur.mass + ' oz');
+                if (cur.volume) mmts.push(cur.volume + ' cups');
+                if (cur.unit) mmts.push(cur.unit + ' units');
+                newIng[ing] = mmts.join(',');
+            }
+            list.ingredients = newIng;
+            $scope.groceryList = list;
         }, function(err) {
             console.log(err);
         });

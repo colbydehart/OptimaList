@@ -3,9 +3,10 @@ var gulp = require('gulp'),
     $ = require('gulp-load-plugins')();
 
 gulp.task('sass', [], function() {
-    return sass('Client/Sass/main.scss')
+    gulp.src('Client/Sass/main.scss')
     .pipe($.plumber())
-    .pipe(gulp.dest('/Content'));
+    .pipe($.sass())
+    .pipe(gulp.dest('Content'));
 });
 
 gulp.task('js', [], function(){

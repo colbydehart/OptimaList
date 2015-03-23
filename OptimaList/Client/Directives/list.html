@@ -1,0 +1,14 @@
+<div id="modal">
+    <button class="btn btn-default col-md-1 col-md-offset-11"  ng-click="groceryList = null">&times;</button>
+    <p>You can make 
+    <span ng-repeat="rec in groceryList.recipes">
+        <a href="{{rec.Url}}">{{rec.Name}}</a><span ng-if="!$last">,</span><span ng-if="$index == groceryList.recipes.length -2"> and</span>
+    </span>
+    </p>
+    <table class="table table-striped">
+        <tr ng-repeat="(name, ing) in groceryList.ingredients">
+            <td>{{name}}</td>
+            <td>{{ing}}</td>
+        </tr>
+    </table>
+</div>
