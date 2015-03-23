@@ -24,9 +24,9 @@ namespace OptimaList.Models
     public class RecipeItem
     {
         public int ID { get; set; }
-        public decimal quantity {get; set;}
+        public decimal Quantity {get; set;}
         [Required, StringLength(30)]
-        public string measurement { get; set; }
+        public string Measurement { get; set; }
 
         public int RecipeId { get; set; }
         [JsonIgnore]

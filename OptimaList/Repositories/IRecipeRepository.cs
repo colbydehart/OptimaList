@@ -15,6 +15,6 @@ namespace OptimaList.Repositories
         void DeleteRecipe(int id);
         Recipe GetRecipeById(int id);
         Ingredient GetOrCreateIngredient(string name);
-        JArray GetOptimalList(string uid, int numOfRecipes);
+        JObject GetOptimalList(string uid, int numOfRecipes);
     }
 }

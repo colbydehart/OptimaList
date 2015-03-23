@@ -38,27 +38,21 @@ namespace OptimaList.Controllers
             dynamic req = request;
             Recipe recipe = new Recipe { Name = req.recipe.Name, Url = req.recipe.Url };
             recipe.UserId = User.Identity.GetUserId();
+            var uid = User.Identity.GetUserId();
             _repo.CreateRecipe(recipe);
             foreach (dynamic ing in (JArray)req.ingredients)
             {
                 var ri = new RecipeItem
                 {
                     Ingredient = _repo.GetOrCreateIngredient((string)ing.Name),
-                    quantity = (decimal)ing.Quantity,
-                    measurement = (string)ing.Measurement,
+                    Quantity = (decimal)ing.Quantity,
+                    Measurement = (string)ing.Measurement,
                     Recipe = recipe
                 };
                 _repo.AddRecipeItem(ri);
             }
 
             return recipe;
-        }
-
-        [HttpPost]
-        [Route("Ingredient")]
-        public Ingredient GetIngredient(string name)
-        {
-            return _repo.GetOrCreateIngredient(name);
         }
 
 
@@ -72,7 +66,7 @@ namespace OptimaList.Controllers
 
         [HttpGet]
         [Route("List")]
-        public JArray GetOptimaList()
+        public JObject GetOptimaList()
         {
             var uid = User.Identity.GetUserId();
             return _repo.GetOptimalList(uid, 3);

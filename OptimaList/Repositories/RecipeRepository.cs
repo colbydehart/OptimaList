@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using QuantityTypes;
+using Newtonsoft.Json.Linq;
 using OptimaList.Models;
 using System;
 using System.Collections.Generic;
@@ -73,12 +74,25 @@ namespace OptimaList.Repositories
         }
 
 
-        public JArray GetOptimalList(string uid, int r)
+        public JObject GetOptimalList(string uid, int r)
         {
             var recipes = from rec in _ctx.Recipes
                     where rec.UserId == uid
                     select rec;
 
+            var res = new JObject();
+            var combo = GetRecipeCombo(recipes, r);
+            res.Add("recipes", combo);
+
+            var ingredientList = CompactIngredients(combo.ToObject<List<Recipe>>());
+            res.Add("ingredients", ingredientList);
+
+            return res;
+
+        }
+
+        private JArray GetRecipeCombo(IEnumerable<Recipe> recipes, int r)
+        {
             var pool = recipes.ToList();
             var n = pool.Count;
             var res = new JArray();
@@ -98,7 +112,7 @@ namespace OptimaList.Repositories
                 foreach (int i in Enumerable.Range(0, r).Reverse())
                 {
                     //if current index is (length of pool-1) + its place in indices i
-                    //minus (length of indices -1)
+                    //minus (length of indices -1) then break
                     if (indices[i] == i + n - r)
                         break;
                     indices[i] += 1;
@@ -113,7 +127,66 @@ namespace OptimaList.Repositories
             }
 
             return JArray.FromObject(bestCombo);
+        }
 
+        private JObject CompactIngredients(IEnumerable<Recipe> ls){
+            var q = from rec in ls
+                    from item in rec.RecipeItems
+                    orderby item.Ingredient.Name
+                    select item;
+
+            Dictionary<string, Dictionary<string, double>> res = new Dictionary<string,Dictionary<string,double>>;
+            string[] vols = "cup,tbsp,tsp,quart,floz".Split(',');
+            string[] masses = "lb,oz,kg,g".Split(',');
+            foreach (RecipeItem ri in q)
+            {
+                if (vols.Contains(ri.Measurement))
+                {
+                    addItem(res, ri, "volume");
+                }
+                else if (masses.Contains(ri.Measurement))
+                {
+                    addItem(res, ri, "mass");
+                }
+                else { addItem(res, ri, "unit"); }
+            }
+
+            return JObject.FromObject(res);
+        }
+
+        private void addItem(Dictionary<string, Dictionary<string,double>> res, RecipeItem item, string type)
+        {
+            if (res.ContainsKey(item.Ingredient.Name))
+            {
+                res[item.Ingredient.Name][type] += ConvertUnits(item.Quantity + " " + item.Measurement, type);
+            }
+            else
+            {
+                res[item.Ingredient.Name] = new Dictionary<string, double> {
+                    {"mass", 0},
+                    {"volume", 0},
+                    {"unit", 0},
+                };
+                res[item.Ingredient.Name][type] = ConvertUnits(item.Quantity, item.Measurement, type);
+            }
+        }
+
+        private double ConvertUnits(decimal quan, string meas, string type)
+        {
+            if (type == "mass")
+            {
+                //TODO GET AN ACTUAL WORKING CONVERSION LIBRARY
+                var m = Mass.Parse(quan.ToString() + " " + meas);
+                return m.ConvertTo(Mass.Pound);
+            }
+            else if (type == "volume")
+            {
+                var v = Volume.Parse(quan.ToString() + " " + meas);
+                return v.ConvertTo(Volume.Litre);
+            }
+            else
+                return (double)quan;
+            
         }
 
         public int NumberOfIngredients(List<Recipe> ls)

@@ -85,7 +85,7 @@ namespace OptimaList.Tests.Repositories
         public void GetOptimalListTest()
         {
             var ls = repo.GetOptimalList("1", 2);
-            Assert.AreEqual(4, ls.Count());
+            Assert.AreEqual(2, ls.GetValue("recipes").Count());
         }
 
         [TestMethod]
@@ -143,13 +143,13 @@ namespace OptimaList.Tests.Repositories
 
                 context.RecipeItems.AddRange(new List<RecipeItem>
                 {
-                    new RecipeItem {ID = 1, quantity=1, measurement="cup", Recipe= bp, Ingredient=po},
-                    new RecipeItem {ID = 2, quantity=1, measurement="cup", Recipe= bp, Ingredient=bt}, 
-                    new RecipeItem {ID = 3, quantity=1, measurement="cup", Recipe= bp, Ingredient=sc}, 
-                    new RecipeItem {ID = 4, quantity=1, measurement="cup", Recipe= pc, Ingredient=bt},
-                    new RecipeItem {ID = 5, quantity=1, measurement="cup", Recipe= pc, Ingredient=cn}, 
-                    new RecipeItem {ID = 6, quantity=1, measurement="cup", Recipe= chow, Ingredient=cn},  
-                    new RecipeItem {ID = 7, quantity=1, measurement="cup", Recipe= chow, Ingredient=br}  
+                    new RecipeItem {ID = 1, Quantity=1, Measurement="cup", Recipe= bp, Ingredient=po},
+                    new RecipeItem {ID = 2, Quantity=1, Measurement="cup", Recipe= bp, Ingredient=bt}, 
+                    new RecipeItem {ID = 3, Quantity=1, Measurement="cup", Recipe= bp, Ingredient=sc}, 
+                    new RecipeItem {ID = 4, Quantity=1, Measurement="cup", Recipe= pc, Ingredient=bt},
+                    new RecipeItem {ID = 5, Quantity=1, Measurement="cup", Recipe= pc, Ingredient=cn}, 
+                    new RecipeItem {ID = 6, Quantity=1, Measurement="cup", Recipe= chow, Ingredient=cn},  
+                    new RecipeItem {ID = 7, Quantity=1, Measurement="cup", Recipe= chow, Ingredient=br}  
                 });
                 context.SaveChanges();
             }
