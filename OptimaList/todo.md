@@ -1,1 +1,7 @@
-- Add integer argument to makelist Controller C#
+- make ingredient form scroll
+- explanation for new recipe recipeform
+- print list
+- email list
+- make header
+- make footer
+- color site/pick brand(some gold)

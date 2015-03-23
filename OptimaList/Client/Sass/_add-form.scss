@@ -5,12 +5,23 @@ add-form{
     width: 100%;
     height: 100%;
     background: rgba(0,0,0,0.2);
+    #add{
+        position:relative;
+        bottom:15px;
+    }
     form{
-        padding: 2rem;
-        border-radius: 30px;
-        position: relative;
-        width: 600px;
-        margin: 4rem auto;
         background-color: $lg;
+        top: 10%;
+        left: 10%;
+        padding: 2rem;
+        height: 80%;
+        border-radius: 10px;
+        position: relative;
+        width: 80%;
+    }
+    #ingredients{
+        height: 30%;
+        overflow-y: scroll;
+        overflow-x: hidden;
     }
 }

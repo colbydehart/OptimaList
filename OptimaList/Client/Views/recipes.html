@@ -8,7 +8,7 @@
         <th></th>
     </tr>
     <tr ng-repeat="recipe in recipes">
-        <td>{{$index}}</td>
+        <td></td>
         <td><a href="#/recipes/{{recipe.ID}}">{{recipe.Name}}</a></td>
         <td>{{recipe.Url}}</td>
         <td>
@@ -19,6 +19,9 @@
     </tr>
 </table>
 <button class="btn btn-primary" ng-click="showForm = !showForm">Add Recipe</button>
-<button class="btn btn-primary" ng-click="getList()">Make List</button>
+<button class="btn btn-primary" ng-click="getList(num)">Make List</button>
+<span>of </span>
+<input ng-model="num" type="number" />
+<span>ingredients</span>
 <grocery-list ng-show="groceryList"></grocery-list>
 <add-form ng-show="showForm"></add-form>

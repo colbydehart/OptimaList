@@ -1,51 +1,42 @@
 <form class="form-inline" ng-submit="addRecipe()" novalidate>
-    <button class="btn btn-default col-md-1 col-md-offset-11"  ng-click="showForm = !showForm">&times;</button>
-    <br/>
-    <div class="form-group">
-        <label for="Name">Name</label>
-        <input ng-model="newRecipe.Name" name="Name" class="form-control" type="text">
-    </div>
-    <div class="form-group">
-        <label for="Url">Url</label>
-        <input ng-model="newRecipe.Url" name="Url" class="form-control" type="text">
-    </div>
+    <button class="close"  ng-click="showForm = !showForm">&times;</button>
+    <div class="row">
+        <h2>Recipe</h2>
+        <div class="form-group col-xs-6">
+            <label for="Name">Name</label>
+            <input ng-model="newRecipe.Name" name="Name" class="form-control" type="text">
+        </div>
+        <div class="form-group col-xs-6">
+            <label for="Url">Url</label>
+            <input ng-model="newRecipe.Url" name="Url" class="form-control" type="text">
+        </div>
+    </div>    
     <h2>Ingredients</h2>
-        <div class="col-md-4">
+    <div class="row">
+        <div class="col-xs-6">
             <label>Name</label>
         </div>
-        <div class="col-md-4">
+        <div class="col-xs-3">
             <label>Quantity</label>
         </div>
-        <div class="col-md-4">
-            <label>Measurement</label>
+        <div class="col-xs-3">
+            <label>Unit</label>
         </div>
-        <div class="form-group row" ng-repeat="ing in ingredients">
-        <div class="col-md-4">
-            <input ng-model="ing.Name" class="form-control" type="text">
-        </div>
-        <div class="col-md-4">
-            <input ng-model="ing.Quantity" class="form-control" type="number">
-        </div>
-        <div class="col-md-4">
-            <select ng-model="ing.Measurement" class="form-control" type="text">
-                <option value="none"></option>
-                <option value="cup">cups</option>
-                <option value="tbsp">tbsp</option>
-                <option value="tsp">tsp</option>
-                <option value="mL">mL</option>
-                <option value="liter">liter</option>
-                <option value="pint">pint</option>
-                <option value="quart">quart</option>
-                <option value="gallon">gallon</option>
-                <option value="floz">fl. oz</option>
-
-                <option value="lb">lb</option>
-                <option value="oz">oz</option>
-                <option value="kg">kg</option>
-                <option value="g">g</option>
-            </select>
-        </div>
-        <br />
     </div>
-    <button class="btn btn-default" type="submit">Add</button>
+    <div id="ingredients">
+        <div class="row" ng-repeat="ing in ingredients">
+            <div class="col-xs-6">
+                <input ng-model="ing.Name" class="form-control" type="text">
+            </div>
+            <div class="col-xs-3">
+                <input ng-model="ing.Quantity" class="form-control" type="number">
+            </div>
+            <div class="col-xs-3">
+                <select ng-model="ing.Measurement" class="form-control" ng-options="unit.label for unit in units">
+                </select>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <button id="add" class="btn btn-default col-xs-4 col-xs-offset-4" type="submit">Add</button>
 </form>

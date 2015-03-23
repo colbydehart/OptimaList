@@ -162,7 +162,7 @@ angular.module('OptimaList')
 angular.module('OptimaList')
 .directive('groceryList', ['recipeService', function(recipeService){
     var _link = function(scope, el, attrs){
-
+        
     };
 
     return {
@@ -177,15 +177,24 @@ angular.module('OptimaList')
 
     var _link = function(scope, el, attrs){
         scope.newRecipe = {};
+        var units = 'none,cup,tbsp,tsp,mL,L,pint,quart,gallon,floz,lb,oz,kg,g'.split(',');
+        units = _.zip(units, ',cups,tbsp,tsp,mL,L,pint,quart,gallon,fl. oz,lb,oz,kg,g'.split(','));
+        scope.units = units.map(function(el) {
+           return {label:el[1], value:el[0]} ;
+        });
         scope.ingredients = [{
             Name: "",
             Quantity:1,
-            Measurement:"none"
+            Measurement:scope.units[0]
         }];
 
         //CREATE RECIPE
         scope.addRecipe = function(){
             scope.ingredients = scope.ingredients.slice(0,-1);
+            scope.ingredients = scope.ingredients.map(function(el) {
+                el.Measurement = el.Measurement.value;
+                return el;
+            });
             recipeService.createRecipe(scope.newRecipe, scope.ingredients).then(function(data){
                 return recipeService.allRecipes();
             }, console.log).then(function(data) {
@@ -195,7 +204,7 @@ angular.module('OptimaList')
             scope.ingredients = [{
                 Name: "",
                 Quantity:1,
-                Measurement:"none"
+                Measurement:scope.units[0]
             }];
             scope.showForm = false;
         };
@@ -206,7 +215,7 @@ angular.module('OptimaList')
                 value.push({
                     Name: "",
                     Quantity:1,
-                    Measurement:"cups"
+                    Measurement:scope.units[0]
                 });
             }
             else if(value[len-1].Name === "" &&
@@ -233,11 +242,12 @@ angular.module('OptimaList')
         templateUrl: '/Client/Views/recipes.html'
     });
 }])
-/************************************************
+/***********************************************
                 RECIPE CONTROLLER
 ************************************************/
 .controller('RecipeController', ['$scope', 'recipeService', function($scope, recipeService){
     $scope.newRecipe = {};
+    $scope.num = 4;
     $scope.showForm = false;
     getRecipes();
 
@@ -258,16 +268,27 @@ angular.module('OptimaList')
         });
     }
     //GET LIST
-    $scope.getList = function(){
-        var newIng = {}
-        recipeService.getOptimaList().then(function(list) {
+    $scope.getList = function(num){
+        if (num > $scope.recipes.length){
+            printError('Not enough recipes in pool ' +
+                       'try adding more recipes or ' +
+                       'selecting fewer for the list');
+            return;
+        }
+        var newIng = {};
+        recipeService.getOptimaList(num).then(function(list) {
             for (var ing in list.ingredients){
-                mmts = [];
+                var mmts = [];
                 var cur = list.ingredients[ing];
                 if (cur.mass) mmts.push(cur.mass + ' oz');
-                if (cur.volume) mmts.push(cur.volume + ' cups');
+                if (cur.volume){
+                    var str = cur.volume >= 1 ?
+                        cur.volume + ' cups' :
+                        (cur.volume*16) + ' tbsp';
+                    mmts.push(str);
+                }
                 if (cur.unit) mmts.push(cur.unit + ' units');
-                newIng[ing] = mmts.join(',');
+                newIng[ing] = mmts.join(' + ');
             }
             list.ingredients = newIng;
             $scope.groceryList = list;
@@ -275,6 +296,13 @@ angular.module('OptimaList')
             console.log(err);
         });
     };
+
+    function printError(tx){
+        $('body').prepend(
+            $('<div>').addClass('alert alert-danger alert-dismissable').text(tx)
+            .append('<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>')
+        );
+    }
 
 }]);
 
@@ -296,8 +324,8 @@ angular.module('OptimaList')
         return _baseRecipes.get(id);
     };
 
-    var _getOptimaList = function() {
-        return _baseRecipes.get("List");
+    var _getOptimaList = function(num) {
+        return _baseRecipes.get("List", {num: num});
     };
 
     

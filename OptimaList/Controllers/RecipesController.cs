@@ -66,10 +66,10 @@ namespace OptimaList.Controllers
 
         [HttpGet]
         [Route("List")]
-        public JObject GetOptimaList()
+        public JObject GetOptimaList(int num)
         {
             var uid = User.Identity.GetUserId();
-            return _repo.GetOptimalList(uid, 3);
+            return _repo.GetOptimalList(uid, num);
         }
 
         // DELETE api/values/5

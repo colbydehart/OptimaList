@@ -16,8 +16,8 @@ angular.module('OptimaList')
         return _baseRecipes.get(id);
     };
 
-    var _getOptimaList = function() {
-        return _baseRecipes.get("List");
+    var _getOptimaList = function(num) {
+        return _baseRecipes.get("List", {num: num});
     };
 
     

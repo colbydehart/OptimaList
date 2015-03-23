@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Humanizer;
+using Newtonsoft.Json.Linq;
 using OptimaList.Models;
 using System;
 using System.Collections.Generic;
@@ -55,7 +56,7 @@ namespace OptimaList.Repositories
 
         public Ingredient GetOrCreateIngredient(string name)
         {
-            name = name.Trim(' ', '_', '\n', '\r').ToLower();
+            name = name.Trim(' ', '_', '\n', '\r').ToLower().Pluralize().Singularize();
             if (_ctx.Ingredients.Any(i => i.Name == name))
             {
                 return _ctx.Ingredients.Single(i => i.Name == name);
