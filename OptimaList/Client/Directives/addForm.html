@@ -2,7 +2,9 @@
     <div class="modal-dialog modal-lg">
         <form class="form-inline modal-content container" ng-submit="null" novalidate>
             <div class="modal-header">
-                <button class="close"  ng-click="showForm = !showForm">&times;</button>
+                <button class="close"  ng-click="showForm = !showForm">
+                    <span class="glyphicon glyphicon-remove"></span>
+                </button>
                 <h2>Add a Recipe</h2>
                 <p><em>
                 Please fill out the information for the recipe. Input ingredients undeneath. Leave
@@ -52,8 +54,12 @@
                 </div>
             </div> 
             <div class="modal-footer">
-                <button class="btn btn-default" ng-click="showForm = !showForm">Cancel</button>
-                <button class="btn btn-primary" ng-click="addRecipe()">Add</button>
+                <button class="btn btn-default" ng-click="showForm = !showForm">
+                    <span class="glyphicon glyphicon-remove"></span> Cancel
+                </button>
+                <button class="btn btn-primary" ng-click="addRecipe()">
+                    <span class="glyphicon glyphicon-ok"></span> Add
+                </button>
             </div>
         </form>
     </div>

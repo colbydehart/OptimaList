@@ -1,6 +1,9 @@
 ﻿<div class="row">
-    <h2>Your Recipes <button class="btn btn-primary pull-right" ng-click="showForm = !showForm">Add Recipe</button></h2>
+    <h2>Your Recipes <button class="btn btn-primary pull-right" ng-click="showForm = !showForm">
+       <span class="glyphicon glyphicon-plus"></span> Add Recipe
+    </button></h2>
 </div>
+<hr class="divider">
 <div class="row">
     <table class="table table-striped">
         <tr>
@@ -12,10 +15,12 @@
         <tr ng-repeat="recipe in recipes">
             <td></td>
             <td><a href="#/recipes/{{recipe.ID}}">{{recipe.Name}}</a></td>
-            <td><a class="btn btn-default" href="{{recipe.Url}}">link</a></td>
+            <td><a class="btn btn-default" href="{{recipe.Url}}">
+               <span class="glyphicon glyphicon-link"></span> link
+            </a></td>
             <td>
                 <button class="btn btn-danger" ng-click="deleteRecipe(recipe)">
-                    delete
+                   <span class="glyphicon glyphicon-trash"></span> Delete
                 </button>
             </td>
         </tr>
@@ -25,7 +30,9 @@
 <div class="row">
     <div class="col-md-6 col-md-offset-3">
         <div class="input-group input-group-lg">
-            <button class="btn btn-success form-control" ng-click="getList(num)">OptimaList</button>
+            <button class="btn btn-success form-control" ng-click="getList(num)">
+                <span class="glyphicon glyphicon-retweet"></span> OptimaList
+            </button>
             <span class="input-group-addon">for</span>
             <input type="number" ng-model="num" class="form-control">
             <span class="input-group-addon">ingredients</span>
