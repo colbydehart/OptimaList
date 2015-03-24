@@ -1,6 +1,9 @@
 angular.module('OptimaList')
 .directive('groceryList', ['recipeService', function(recipeService){
     var _link = function(scope, el, attrs){
+    	scope.print = function(){
+    		window.print();
+    	};
         
     };
 

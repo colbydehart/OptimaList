@@ -1,41 +1,15 @@
 * {
   box-sizing: border-box; }
 
-add-form {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.2); }
-  add-form #add {
-    position: relative;
-    bottom: 15px; }
-  add-form form {
-    background-color: #eee;
-    top: 10%;
-    left: 10%;
-    padding: 2rem;
-    height: 80%;
-    border-radius: 10px;
-    position: relative;
-    width: 80%; }
-  add-form #ingredients {
-    height: 30%;
-    overflow-y: scroll;
-    overflow-x: hidden; }
+add-form .modal {
+  background-color: rgba(0, 0, 0, 0.4); }
 
-grocery-list {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.2); }
-  grocery-list #modal {
-    padding: 2rem;
-    border-radius: 30px;
-    position: relative;
-    width: 600px;
-    margin: 4rem auto;
-    background-color: #eee; }
+#print {
+  display: none; }
+
+@media print {
+  body {
+    display: none; }
+  #print {
+    display: block;
+    font-size: 1.5em; } }

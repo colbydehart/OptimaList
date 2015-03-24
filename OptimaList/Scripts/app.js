@@ -162,6 +162,9 @@ angular.module('OptimaList')
 angular.module('OptimaList')
 .directive('groceryList', ['recipeService', function(recipeService){
     var _link = function(scope, el, attrs){
+    	scope.print = function(){
+    		window.print();
+    	};
         
     };
 
@@ -275,6 +278,7 @@ angular.module('OptimaList')
                        'selecting fewer for the list');
             return;
         }
+        $('#print').remove();
         var newIng = {};
         recipeService.getOptimaList(num).then(function(list) {
             for (var ing in list.ingredients){
@@ -292,6 +296,11 @@ angular.module('OptimaList')
             }
             list.ingredients = newIng;
             $scope.groceryList = list;
+            var print = $('<ul>').attr('id', 'print');
+            for (var ing in newIng){
+                print.append($('<li>').text(ing + ': ' + newIng[ing]));
+            }
+            $('html').append(print);
         }, function(err) {
             console.log(err);
         });

@@ -1,7 +1,16 @@
-- make ingredient form scroll
-- explanation for new recipe recipeform
-- print list
-- email list
+- bs modal for grocery list
+- splash page
+- logout button
+---
+- print list button
+- email list button
 - make header
+---
 - make footer
 - color site/pick brand(some gold)
+- form validation
+---
+- delete recipe items in delete method
+- make put controller method
+- delete recipes after printout
+- google signin
