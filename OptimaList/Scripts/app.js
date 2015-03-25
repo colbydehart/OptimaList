@@ -1,4 +1,12 @@
 angular.module('OptimaList', ['restangular', 'ngRoute', 'LocalStorageModule'])
+.run(['$rootScope', function($rootScope) {
+    $rootScope.printError = function(tx){
+        $('body').prepend(
+            $('<div>').addClass('alert alert-danger alert-dismissable').text(tx)
+            .append('<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>')
+        );
+    };
+}])
 .config(   ['RestangularProvider', '$routeProvider', '$httpProvider',
    function (RestangularProvider,   $routeProvider,   $httpProvider) {
     
@@ -28,19 +36,29 @@ angular.module('OptimaList', ['restangular', 'ngRoute', 'LocalStorageModule'])
     }
 
 }])
+.controller('HeaderController', ['$rootScope', 'localStorageService', '$location', 
+                         function($rootScope,   localStorageService,   $location) {
+    $rootScope.logout = function(){
+        $rootScope.auth = null;
+        localStorageService.remove('auth');
+        $location.path('/');
+    };
+}])
 /************************************************
                 AUTH INTERCEPTOR
 ************************************************/
-.factory('authInterceptorFactory', ['$location', '$q', 'localStorageService', 
-                            function($location,   $q,   localStorageService){
+.factory('authInterceptorFactory', ['$location', '$q', 'localStorageService', '$rootScope', 
+                            function($location,   $q,   localStorageService,   $rootScope){
     return {
         request: function(config){
             config.headers = config.headers || {};
 
             var authData = localStorageService.get('auth')
 
-            if(authData)
+            if(authData){
                 config.headers.Authorization = 'Bearer ' + authData.token;
+                $rootScope.auth = authData;
+            }
 
             return config;
         },
@@ -79,13 +97,11 @@ angular.module('OptimaList')
                 console.log(res);
             },
             function(err) {
-                console.log(err);
-                $scope.errors = [];
-                ers = err.data.ModelState;
-                for (var key in ers){
-                    ers[key].forEach(function(el) {
-                        $scope.errors.push(el);
-                    })
+                err = err.data.ModelState;
+                for (var m in err){
+                    _.forEach(err[m], function(el){
+                        $scope.printError(el);
+                    });
                 }
             }
         );
@@ -103,15 +119,15 @@ angular.module('OptimaList')
         .then(function(data){
             $location.path('recipes');
         }, function(err){
-
+            $scope.printError(err.responseJSON.error_description);
         });
     };
 }])
 /************************************************
                AUTH SERVICE
 ************************************************/
-.factory('authService', ['$http', '$q', 'localStorageService',
-                 function($http,   $q,   localStorageService){
+.factory('authService', ['$http', '$q', 'localStorageService', '$rootScope',
+                 function($http,   $q,   localStorageService,   $rootScope){
 
     var base = '/api/Account/';
     var as = {};
@@ -128,10 +144,10 @@ angular.module('OptimaList')
                token: data.access_token,
                name: user.username
            });
+           $rootScope.auth = localStorageService.get('auth');
            deferred.resolve(data); 
         }, function(err){
            deferred.reject(err); 
-           console.log(err);
         });
 
         return deferred.promise;
@@ -160,7 +176,7 @@ angular.module('OptimaList')
 }]);
 
 angular.module('OptimaList')
-.directive('groceryList', ['recipeService', 'localStorageService', function(recipeService, localStorageService){
+.directive('groceryList', ['recipeService', '$q', 'localStorageService', function(recipeService, $q, localStorageService){
     var _link = function(scope, el, attrs){
     	scope.print = function(){
     		window.print();
@@ -171,6 +187,18 @@ angular.module('OptimaList')
 			var emailBody = '';
 			$('#print li').each(function() {emailBody+= $(this).text() + '\n'});
 			window.location.href = 'mailto:'+emailTo+'?Subject=OptimaList&Body='+escape(emailBody);
+        };
+
+        scope.removeRecipes = function(){
+            var proms = [];
+            _.each(scope.groceryList.recipes, function(el){
+                proms.push( 
+                    _.find(scope.recipes, {ID: el.ID}).remove()
+                );
+            });
+            $q.all(proms)
+                .then(recipeService.allRecipes)
+                .then(function(rs){scope.recipes = rs;});
         };
     };
 
@@ -279,7 +307,7 @@ angular.module('OptimaList')
     //GET LIST
     $scope.getList = function(num){
         if (num > $scope.recipes.length){
-            printError('Not enough recipes in pool ' +
+            $scope.printError('Not enough recipes in pool ' +
                        'try adding more recipes or ' +
                        'selecting fewer for the list');
             return;
@@ -311,13 +339,6 @@ angular.module('OptimaList')
             console.log(err);
         });
     };
-
-    function printError(tx){
-        $('body').prepend(
-            $('<div>').addClass('alert alert-danger alert-dismissable').text(tx)
-            .append('<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>')
-        );
-    }
 
 }]);
 

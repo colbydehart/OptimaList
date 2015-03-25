@@ -2,6 +2,18 @@
     box-sizing: border-box;
 }
 
+.alert{
+	margin-bottom: 0;
+}
+
+#recipeHeader{margin-bottom: 2rem;}
+footer{
+	text-align: center;
+	img{
+		width: 2em;
+	}
+}
+
 $lg : #eee;
 $dg : #666;
 
@@ -9,6 +21,10 @@ $dg : #666;
 @import "grocery-list";
 @import "recipes";
 
+body{
+	// background: url('Images/gplay.png');
+	
+}
 
 #print{display:none}
 @media print{

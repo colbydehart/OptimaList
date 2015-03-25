@@ -34,7 +34,7 @@ angular.module('OptimaList')
     //GET LIST
     $scope.getList = function(num){
         if (num > $scope.recipes.length){
-            printError('Not enough recipes in pool ' +
+            $scope.printError('Not enough recipes in pool ' +
                        'try adding more recipes or ' +
                        'selecting fewer for the list');
             return;
@@ -66,12 +66,5 @@ angular.module('OptimaList')
             console.log(err);
         });
     };
-
-    function printError(tx){
-        $('body').prepend(
-            $('<div>').addClass('alert alert-danger alert-dismissable').text(tx)
-            .append('<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>')
-        );
-    }
 
 }]);

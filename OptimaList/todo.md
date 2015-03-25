@@ -1,16 +1,17 @@
-- bs modal for grocery list
+#Current
+- delete recipes after printout
+
+#Today
+- about/help page.
+- print recipes & urls in print and email list
 - splash page
-- logout button
----
-- print list button
-- email list button
-- make header
----
-- make footer
+- new font
+
+#Wednesday
 - color site/pick brand(some gold)
 - form validation
----
-- delete recipe items in delete method
 - make put controller method
-- delete recipes after printout
+- python decorators
+
+#Thursday
 - google signin

@@ -23,13 +23,11 @@ angular.module('OptimaList')
                 console.log(res);
             },
             function(err) {
-                console.log(err);
-                $scope.errors = [];
-                ers = err.data.ModelState;
-                for (var key in ers){
-                    ers[key].forEach(function(el) {
-                        $scope.errors.push(el);
-                    })
+                err = err.data.ModelState;
+                for (var m in err){
+                    _.forEach(err[m], function(el){
+                        $scope.printError(el);
+                    });
                 }
             }
         );
@@ -47,15 +45,15 @@ angular.module('OptimaList')
         .then(function(data){
             $location.path('recipes');
         }, function(err){
-
+            $scope.printError(err.responseJSON.error_description);
         });
     };
 }])
 /************************************************
                AUTH SERVICE
 ************************************************/
-.factory('authService', ['$http', '$q', 'localStorageService',
-                 function($http,   $q,   localStorageService){
+.factory('authService', ['$http', '$q', 'localStorageService', '$rootScope',
+                 function($http,   $q,   localStorageService,   $rootScope){
 
     var base = '/api/Account/';
     var as = {};
@@ -72,10 +70,10 @@ angular.module('OptimaList')
                token: data.access_token,
                name: user.username
            });
+           $rootScope.auth = localStorageService.get('auth');
            deferred.resolve(data); 
         }, function(err){
            deferred.reject(err); 
-           console.log(err);
         });
 
         return deferred.promise;
