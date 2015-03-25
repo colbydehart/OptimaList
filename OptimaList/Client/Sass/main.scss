@@ -1,5 +1,29 @@
+$lg : #eee;
+$dg : #666;
+$brand : #5D86DE;
+
 *{
     box-sizing: border-box;
+    font-family: 'Josefin Sans', sans-serif;
+}
+
+.logo{
+	font-family: 'Pacifico', cursive;
+	color:$brand !important;
+}
+
+p{font-size: 1.2em}
+
+.splash *{
+	margin-bottom: 0.5em;
+}
+
+#register{
+	display:block;
+	button{
+		margin:auto;
+		display:block;
+	}
 }
 
 .alert{
@@ -7,24 +31,27 @@
 }
 
 #recipeHeader{margin-bottom: 2rem;}
-footer{
-	text-align: center;
-	img{
-		width: 2em;
-	}
+
+
+a, h1, h2, h3, h4, .navbar-brand{color:$brand;}
+.btn-success, .btn-success:focus{background-color: $brand;border:none;}
+.btn-success:hover,.btn-success:active{background-color: darken($brand, 10);border:none;}
+#mainbtn{color:white !important;}
+body{
+	background: url('Images/linen.png');
 }
 
-$lg : #eee;
-$dg : #666;
+#container{
+	padding:20px 0;
+	width:100%;
+	margin-bottom: 60px;
+}
 
 @import "add-form";
 @import "grocery-list";
 @import "recipes";
+@import "headerfooter";
 
-body{
-	// background: url('Images/gplay.png');
-	
-}
 
 #print{display:none}
 @media print{

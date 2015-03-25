@@ -313,8 +313,14 @@ angular.module('OptimaList')
             return;
         }
         $('#print').remove();
+        var print = $('<ul>').attr('id', 'print');
         var newIng = {};
         recipeService.getOptimaList(num).then(function(list) {
+            print.append($('<h3>').text('Recipes'));
+            _.each(list.recipes, function(el){
+                print.append($('<li>').text(el.Name + ': ' + el.Url));
+            });
+            print.append($('<h3>').text('Ingredients'));
             for (var ing in list.ingredients){
                 var mmts = [];
                 var cur = list.ingredients[ing];
@@ -327,13 +333,10 @@ angular.module('OptimaList')
                 }
                 if (cur.unit) mmts.push(cur.unit + ' units');
                 newIng[ing] = mmts.join(' + ');
+                print.append($('<li>').text(ing + ': ' + newIng[ing]));
             }
             list.ingredients = newIng;
             $scope.groceryList = list;
-            var print = $('<ul>').attr('id', 'print');
-            for (var ing in newIng){
-                print.append($('<li>').text(ing + ': ' + newIng[ing]));
-            }
             $('html').append(print);
         }, function(err) {
             console.log(err);
