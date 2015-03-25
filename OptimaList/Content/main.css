@@ -13,6 +13,7 @@ p {
   margin-bottom: 0.5em; }
 
 #register {
+  text-decoration: none;
   display: block; }
   #register button {
     margin: auto;

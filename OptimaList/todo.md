@@ -1,5 +1,4 @@
 #Current
-- form validation
 
 #Wednesday
 - make put controller method
