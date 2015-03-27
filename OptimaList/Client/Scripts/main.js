@@ -23,6 +23,9 @@
     $routeProvider.when('/', {
         controller: 'HomeController',
         templateUrl: '/Client/Views/home.html'
+    })
+    .when('/about', {
+        templateUrl: '/Client/Views/about.html'
     });
 }])
 

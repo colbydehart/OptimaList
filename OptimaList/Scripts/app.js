@@ -23,6 +23,9 @@ angular.module('OptimaList', ['restangular', 'ngRoute', 'LocalStorageModule'])
     $routeProvider.when('/', {
         controller: 'HomeController',
         templateUrl: '/Client/Views/home.html'
+    })
+    .when('/about', {
+        templateUrl: '/Client/Views/about.html'
     });
 }])
 
@@ -92,9 +95,15 @@ angular.module('OptimaList')
                          function($scope,   $location,   authService) {
     
     $scope.signup = function(){
-        authService.register($scope.user).then(
+        var usr= $scope.user;
+        authService.register(usr).then(
             function(res){
-                console.log(res);
+                authService.login({username:usr.Email, password:usr.Password}).then(function(){
+                    $location.path('recipes');
+                },
+                function(err){
+                    $scope.printError(err);
+                });
             },
             function(err) {
                 err = err.data.ModelState;
