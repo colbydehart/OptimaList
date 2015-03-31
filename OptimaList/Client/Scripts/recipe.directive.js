@@ -16,6 +16,7 @@ angular.module('OptimaList')
 
         //CREATE RECIPE
         scope.addRecipe = function(){
+            scope.fadd.$setPristine();
             scope.ingredients = scope.ingredients.slice(0,-1);
             scope.ingredients = scope.ingredients.map(function(el) {
                 el.Measurement = el.Measurement.value;

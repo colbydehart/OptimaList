@@ -1,6 +1,6 @@
 <div class="modal" style="display:block">
     <div class="modal-dialog modal-lg">
-        <form name="fadd" class="form-inline modal-content container" ng-submit="null" novalidate>
+        <form name="fadd" class="form-inline modal-content container" ng-submit="addRecipe()" novalidate>
             <div class="modal-header">
                 <button class="close"  ng-click="showForm = !showForm">
                     <span class="glyphicon glyphicon-remove"></span>
@@ -60,7 +60,7 @@
                 <button class="btn btn-default" ng-click="showForm = !showForm">
                     <span class="glyphicon glyphicon-remove"></span> Cancel
                 </button>
-                <button class="btn btn-primary" ng-click="addRecipe()">
+                <button class="btn btn-primary" type="submit">
                     <span class="glyphicon glyphicon-ok"></span> Add
                 </button>
             </div>
