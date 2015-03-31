@@ -3,22 +3,22 @@ var gulp = require('gulp'),
     $ = require('gulp-load-plugins')();
 
 gulp.task('sass', [], function() {
-    gulp.src('Client/Sass/main.scss')
+    gulp.src('client/sass/main.scss')
     .pipe($.plumber())
     .pipe($.sass())
-    .pipe(gulp.dest('Content'));
+    .pipe(gulp.dest('optimaList/static/optimaList/content'));
 });
 
 gulp.task('js', [], function(){
-    gulp.src(['Client/Scripts/main.js','Client/Scripts/*.js'])
+    gulp.src(['client/scripts/main.js','client/scripts/*.js'])
     .pipe($.plumber())
     .pipe($.concat('app.js'))
-    .pipe(gulp.dest('Scripts'));
+    .pipe(gulp.dest('optimaList/static/optimaList/content'));
 });
 
 gulp.task("default", ['js', 'sass'], function(){
     console.log("howdy y'all");
-    gulp.watch(['Client/Scripts/*.js'], ['js']);
-    gulp.watch(['Client/Sass/*.scss'], ['sass']);
+    gulp.watch(['client/scripts/*.js'], ['js']);
+    gulp.watch(['client/sass/*.scss'], ['sass']);
 });
 
