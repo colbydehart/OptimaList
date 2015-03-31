@@ -1,6 +1,6 @@
 # OptimaList
 
-A grocery list generator based on saved recipes
+A grocery list generator based on saved recipes and ingredients
 
 ![](https://s3.amazonaws.com/ColbyDeHart/Optimalist.gif)
 
