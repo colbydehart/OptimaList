@@ -7,14 +7,15 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = User
-        fields = ('url', 'username', 'email', 'is_staff')
+        fields = ('id' 'username', 'recipes')
 
 
 class RecipeSerializer(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')
 
     class Meta:
         model = Recipe
-        fields = ('name', 'url', 'user', 'id')
+        fields = ('name', 'url', 'owner', 'id')
 
 
 class RecipeItemSerializer(serializers.HyperlinkedModelSerializer):

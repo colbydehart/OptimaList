@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 class Recipe(models.Model):
     name = models.CharField(max_length=60, blank=False)
     url = models.URLField()
-    user = models.ForeignKey(User)
+    owner = models.ForeignKey(User)
 
 
 class Ingredient(models.Model):
