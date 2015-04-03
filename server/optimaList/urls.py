@@ -1,16 +1,15 @@
+from rest_framework.urlpatterns import format_suffix_patterns
 from django.conf.urls import include, url
-from rest_framework import routers
-from ol.views import *
-
-
-router = routers.DefaultRouter()
-router.register(r'users', UserViewSet)
-router.register(r'recipes', RecipeViewSet)
-router.register(r'recipeItems', RecipeItemViewSet)
-router.register(r'ingredients', IngredientViewSet)
+from ol import views
 
 
 urlpatterns = [
-    url(r'^', include(router.urls)),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    url(r'api/recipes/$', views.recipe_list),
+    url(r'api/recipes/(?P<pk>[0-9]+)$', views.recipe_detail),
+    url(r'^api-auth/', include(
+        'rest_framework.urls',
+        namespace='rest_framework'
+    )),
 ]
+
+urlpatterns = format_suffix_patterns(urlpatterns)

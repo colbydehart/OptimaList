@@ -1,24 +1,42 @@
-from django.contrib.auth.models import User
-from rest_framework import viewsets
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+#from django.contrib.auth.models import User
+from models import Recipe
 from serializers import *
-from models import RecipeItem, Recipe, Ingredient
 
 
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+@api_view(['GET', 'POST'])
+def recipe_list(request, format=None):
+    if request.method == 'GET':
+        recipes = Recipe.objects.all()
+        serializer = RecipeSerializer(recipes, many=True)
+        return Response(serializer.data)
+    elif request.method == 'POST':
+        serializer = RecipeSerializer(request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class RecipeViewSet(viewsets.ModelViewSet):
-    queryset = Recipe.objects.all()
-    serializer_class = RecipeSerializer
+@api_view(['GET', 'PUT', 'DELETE'])
+def recipe_detail(request, pk, format=None):
+    try:
+        recipe = Recipe.objects.get(pk=pk)
+    except Recipe.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
+    if request.method == 'GET':
+        slzr = RecipeSerializer(recipe)
+        return Response(slzr.data)
 
-class RecipeItemViewSet(viewsets.ModelViewSet):
-    queryset = RecipeItem.objects.all()
-    serializer_class = RecipeItemSerializer
+    elif request.method == 'PUT':
+        slzr = RecipeSerializer(recipe, data=request.data)
+        if slzr.is_valid():
+            slzr.save()
+            return Response(slzr.data)
 
-
-class IngredientViewSet(viewsets.ModelViewSet):
-    queryset = Ingredient.objects.all()
-    serializer_class = IngredientSerializer
+    elif request.method == 'DELETE':
+        recipe.delete()
+        return Response(status=HTTP_204_NO_CONTENT)
