@@ -4,11 +4,26 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.http import Http404
 from django.views.decorators.csrf import csrf_exempt
-#from django.contrib.auth.models import User
+from django.contrib.auth.models import User
 from ol.models import Recipe
 from ol.serializers import *
 from ol.permissions import IsOwnerOrReadOnly
 
+
+class Register(APIView):
+    permission_classes= (permissions.AllowAny,)
+
+    def post(self, request, format=None):
+        slzr = UserSerializer(data=request.data)
+        if slzr.is_valid():
+            User.objects.create_user(
+                slzr.data['email'],
+                slzr.data['username'],
+                slzr.data['password']
+            )
+            return Response(slzr.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(slzr._errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class RecipeList(APIView):

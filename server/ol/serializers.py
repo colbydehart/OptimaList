@@ -1,13 +1,13 @@
 from rest_framework import serializers
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from models import RecipeItem, Recipe, Ingredient
 
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = User
-        fields = ('id' 'username', 'recipes')
+        model = get_user_model()
+        fields =('username', 'email', 'password')
 
 
 class RecipeSerializer(serializers.ModelSerializer):
@@ -18,14 +18,14 @@ class RecipeSerializer(serializers.ModelSerializer):
         fields = ('name', 'url', 'owner', 'id')
 
 
-class RecipeItemSerializer(serializers.HyperlinkedModelSerializer):
+class RecipeItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = RecipeItem
         fields = ('id', 'recipe', 'ingredient', 'measurement', 'quantity')
 
 
-class IngredientSerializer(serializers.HyperlinkedModelSerializer):
+class IngredientSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Ingredient
