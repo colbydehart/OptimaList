@@ -9,9 +9,9 @@ angular.module('OptimaList')
            return {label:el[1], value:el[0]} ;
         });
         scope.ingredients = [{
-            Name: "",
-            Quantity:1,
-            Measurement:scope.units[0]
+            name: "",
+            quantity:1,
+            measurement:scope.units[0]
         }];
 
         //CREATE RECIPE
@@ -19,7 +19,7 @@ angular.module('OptimaList')
             scope.fadd.$setPristine();
             scope.ingredients = scope.ingredients.slice(0,-1);
             scope.ingredients = scope.ingredients.map(function(el) {
-                el.Measurement = el.Measurement.value;
+                el.measurement = el.measurement.value;
                 return el;
             });
             recipeService.createRecipe(scope.newRecipe, scope.ingredients).then(function(data){
@@ -29,25 +29,25 @@ angular.module('OptimaList')
             }).catch(console.log);
             scope.newRecipe = {};
             scope.ingredients = [{
-                Name: "",
-                Quantity:1,
-                Measurement:scope.units[0]
+                name: "",
+                quantity:1,
+                measurement:scope.units[0]
             }];
             scope.showForm = false;
         };
 
         scope.$watch('ingredients', function(value){
             var len = value.length;
-            if(value[len-1].Name != ""){
+            if(value[len-1].name != ""){
                 value.push({
-                    Name: "",
-                    Quantity:1,
-                    Measurement:scope.units[0]
+                    name: "",
+                    quantity:1,
+                    measurement:scope.units[0]
                 });
             }
-            else if(value[len-1].Name === "" &&
+            else if(value[len-1].name === "" &&
                     value[len-2] && 
-                    value[len-2].Name ===""){
+                    value[len-2].name ===""){
                 value.pop();
             }
         }, true);

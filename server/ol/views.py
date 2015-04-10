@@ -17,8 +17,8 @@ class Register(APIView):
         slzr = UserSerializer(data=request.data)
         if slzr.is_valid():
             User.objects.create_user(
-                slzr.data['email'],
                 slzr.data['username'],
+                slzr.data['email'],
                 slzr.data['password']
             )
             return Response(slzr.data, status=status.HTTP_201_CREATED)
@@ -29,20 +29,31 @@ class Register(APIView):
 class RecipeList(APIView):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly)
 
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
 
     def get(self, request, format=None):
-        recipes = Recipe.objects.all()
+        recipes = Recipe.objects.filter(owner=request.user)
         serializer = RecipeSerializer(recipes, many=True)
         return Response(serializer.data)
 
     def post(self, request, format=None):
-        serializer = RecipeSerializer(request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        rc = request.data.get('recipe')
+        recipe = Recipe(name = rc.get('name'), url=rc.get('url'), owner=request.user)
+        recipe.save()
+        for ing in request.data.get('ingredients'):
+            makeRecipeItem(recipe, ing)
+        slzr = RecipeSerializer(recipe)
+        return Response(slzr.data, status=status.HTTP_201_CREATED)
+
+def makeRecipeItem(recipe, ri):
+    ing, created = Ingredient.objects.get_or_create(name=ri.get('name'))
+    recipe.recipeitem_set.create(
+        recipe=recipe,
+        ingredient=ing,
+        measurement=ri.get('measurement'),
+        quantity=ri.get('quantity')
+    )
+
+
 
 
 class RecipeDetail(APIView):

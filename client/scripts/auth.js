@@ -61,7 +61,7 @@ angular.module('OptimaList')
 .factory('authService', ['$http', '$q', 'localStorageService', '$rootScope',
                  function($http,   $q,   localStorageService,   $rootScope){
 
-    var base = '/api/Account/';
+    var base = '/';
     var as = {};
     function _register(user){
         return $http.post(base + 'Register', user);

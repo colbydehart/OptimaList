@@ -39,6 +39,9 @@
     }
 
 }])
+/************************************************
+                HEADER CONTROLLER
+************************************************/
 .controller('HeaderController', ['$rootScope', 'localStorageService', '$location', 
                          function($rootScope,   localStorageService,   $location) {
     $rootScope.logout = function(){
@@ -59,7 +62,7 @@
             var authData = localStorageService.get('auth')
 
             if(authData){
-                config.headers.Authorization = 'Bearer ' + authData.token;
+                config.headers.Authorization = 'Token ' + authData.token;
                 $rootScope.auth = authData;
             }
 

@@ -18,15 +18,15 @@
                 <div class="row">
                     <h2>Recipe</h2>
                     <div class="form-group col-xs-6">
-                        <label for="Name">Name</label>
-                        <input ng-model="newRecipe.Name" required name="Name" class="form-control" type="text">
-                        <div class="alert alert-warning" ng-show="fadd.Name.$dirty && fadd.Name.$error.required">
+                        <label for="name">Name</label>
+                        <input ng-model="newRecipe.name" required name="name" class="form-control" type="text">
+                        <div class="alert alert-warning" ng-show="fadd.name.$dirty && fadd.name.$error.required">
                             Recipes must have a name.
                         </div>
                     </div>
                     <div class="form-group col-xs-6">
-                        <label for="Url">Url</label>
-                        <input ng-model="newRecipe.Url" name="Url" class="form-control" type="text">
+                        <label for="url">Url</label>
+                        <input ng-model="newRecipe.url" name="url" class="form-control" type="text">
                     </div>
                 </div>    
                 <h2>Ingredients</h2>
@@ -44,13 +44,13 @@
                 <div id="ingredients">
                     <div class="row" ng-repeat="ing in ingredients">
                         <div class="col-xs-6">
-                            <input ng-model="ing.Name" class="form-control" type="text">
+                            <input ng-model="ing.name" class="form-control" type="text">
                         </div>
                         <div class="col-xs-3">
-                            <input ng-model="ing.Quantity" class="form-control" type="number">
+                            <input ng-model="ing.quantity" class="form-control" type="number">
                         </div>
                         <div class="col-xs-3">
-                            <select ng-model="ing.Measurement" class="form-control" ng-options="unit.label for unit in units">
+                            <select ng-model="ing.measurement" class="form-control" ng-options="unit.label for unit in units">
                             </select>
                         </div>
                     </div>

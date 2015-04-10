@@ -7,7 +7,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = get_user_model()
-        fields =('username', 'email', 'password')
+        fields = ('username', 'email', 'password')
 
 
 class RecipeSerializer(serializers.ModelSerializer):
