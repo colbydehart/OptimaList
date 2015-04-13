@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.http import Http404
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from ol.models import Recipe
 from ol.serializers import *
@@ -27,7 +28,7 @@ class Register(APIView):
 
 
 class RecipeList(APIView):
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly)
+    permission_classes = (permissions.IsAuthenticated,)
 
 
     def get(self, request, format=None):
@@ -44,6 +45,7 @@ class RecipeList(APIView):
         slzr = RecipeSerializer(recipe)
         return Response(slzr.data, status=status.HTTP_201_CREATED)
 
+
 def makeRecipeItem(recipe, ri):
     ing, created = Ingredient.objects.get_or_create(name=ri.get('name'))
     recipe.recipeitem_set.create(
@@ -54,10 +56,8 @@ def makeRecipeItem(recipe, ri):
     )
 
 
-
-
 class RecipeDetail(APIView):
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly)
+    permission_classes = (permissions.IsAuthenticated,)
 
     def get_object(self, pk):
         try:
@@ -67,8 +67,13 @@ class RecipeDetail(APIView):
 
     def get(self, request, pk, format=None):
         recipe = self.get_object(pk)
-        serializer = RecipeSerializer(recipe)
-        return Response(serializer.data)
+        rec = RecipeSerializer(recipe)
+        recipe_items = RecipeItem.objects.filter(recipe=recipe)
+        items = RecipeItemSerializer(recipe_items, many=True)
+        return Response({
+            'recipe': rec.data,
+            'items': items.data
+        })
 
     def put(self, request, pk, format=None):
         recipe = self.get_object(pk)
@@ -82,3 +87,12 @@ class RecipeDetail(APIView):
         recipe = self.get_object(pk)
         recipe.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+
+class OptimaList(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request):
+        rate = request.GET.get('rate')
+        return Response({'rate': rate})

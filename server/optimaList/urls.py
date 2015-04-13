@@ -7,8 +7,9 @@ from ol import views
 urlpatterns = [
     url(r'register/$', views.Register.as_view()),
     url(r'^token/', obtain_auth_token),
-    url(r'recipes/$', views.RecipeList.as_view()),
-    url(r'recipes/(?P<pk>[0-9]+)$', views.RecipeDetail.as_view()),
+    url(r'^list/$', views.OptimaList.as_view()),
+    url(r'^recipes/$', views.RecipeList.as_view()),
+    url(r'^recipes/(?P<pk>[0-9]+)$', views.RecipeDetail.as_view()),
     url(r'^api-auth/', include(
         'rest_framework.urls',
         namespace='rest_framework'

@@ -19,6 +19,8 @@ class RecipeSerializer(serializers.ModelSerializer):
 
 
 class RecipeItemSerializer(serializers.ModelSerializer):
+    recipe = serializers.StringRelatedField()
+    ingredient = serializers.StringRelatedField()
 
     class Meta:
         model = RecipeItem

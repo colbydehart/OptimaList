@@ -12,9 +12,15 @@ class Recipe(models.Model):
     url = models.URLField()
     owner = models.ForeignKey(User)
 
+    def __str__(self):
+        return self.name
+
 
 class Ingredient(models.Model):
     name = models.CharField(max_length=60, blank=False)
+
+    def __str__(self):
+        return self.name
 
 
 class RecipeItem(models.Model):
