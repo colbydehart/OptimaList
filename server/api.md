@@ -23,3 +23,14 @@
             "measurement"
         }
     ]
+
+
+- /list GET [?rate=3]
+    create optimal list
+    "recipes": [
+        {"name", "url"}
+    ]
+    "ingredients": [
+        {"{name}": {"mass", "volume", "unit"}}
+        //eg {"potato" : {"volume": "2" }
+    ]

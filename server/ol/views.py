@@ -1,3 +1,4 @@
+from inflection import singularize
 from rest_framework import status, permissions
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -9,6 +10,7 @@ from django.contrib.auth.models import User
 from ol.models import Recipe
 from ol.serializers import *
 from ol.permissions import IsOwnerOrReadOnly
+from ol.optimizer import optimize
 
 
 class Register(APIView):
@@ -47,7 +49,9 @@ class RecipeList(APIView):
 
 
 def makeRecipeItem(recipe, ri):
-    ing, created = Ingredient.objects.get_or_create(name=ri.get('name'))
+    name = ri.get('name')
+    name = singularize(name.lower().strip())
+    ing, created = Ingredient.objects.get_or_create(name=name)
     recipe.recipeitem_set.create(
         recipe=recipe,
         ingredient=ing,
@@ -94,5 +98,7 @@ class OptimaList(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request):
-        rate = request.GET.get('rate')
-        return Response({'rate': rate})
+        recipes = Recipe.objects.filter(owner=request.user)
+        rate = request.GET.get('rate', 3)
+        opt_list = optimize(recipes, rate)
+        return Response(opt_list)
