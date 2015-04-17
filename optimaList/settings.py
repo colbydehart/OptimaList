@@ -13,7 +13,6 @@ import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 import dj_database_url
-DATABASES['default'] = dj_database_url.config()
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
@@ -72,10 +71,7 @@ WSGI_APPLICATION = 'optimaList.wsgi.application'
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+    'default': dj_database_url.config(),
 }
 
 # Internationalization
