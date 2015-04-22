@@ -73,7 +73,7 @@ angular.module('OptimaList')
         $.post('/token/', user)
         .then(function(data){
            localStorageService.set('auth', {
-               token: data.access_token,
+               token: data.token,
                name: user.username
            });
            $rootScope.auth = localStorageService.get('auth');
