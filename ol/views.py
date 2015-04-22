@@ -4,6 +4,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.http import Http404
+from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -12,6 +13,9 @@ from ol.serializers import *
 from ol.permissions import IsOwnerOrReadOnly
 from ol.optimizer import optimize
 
+
+def index(request):
+    return render(request, 'ol/index.html')
 
 class Register(APIView):
     permission_classes= (permissions.AllowAny,)
