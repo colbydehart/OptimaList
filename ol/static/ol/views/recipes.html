@@ -1,0 +1,44 @@
+﻿<div id="recipeHeader" class="row">
+    <h2>Your Recipes <button class="btn btn-primary pull-right" ng-click="showForm = !showForm">
+       <span class="glyphicon glyphicon-plus"></span> Add Recipe
+    </button></h2>
+</div>
+<div ng-show="recipes.length" class="row">
+    <table class="table table-striped">
+        <tr>
+            <th></th>
+            <th>Name</th>
+            <th>Url</th>
+            <th></th>
+        </tr>
+        <tr ng-repeat="recipe in recipes">
+            <td></td>
+            <td><a href="#/recipes/{{recipe.ID}}">{{recipe.Name}}</a></td>
+            <td><a class="btn btn-default" href="{{recipe.Url}}">
+               <span class="glyphicon glyphicon-link"></span> link
+            </a></td>
+            <td>
+                <button class="btn btn-danger" ng-click="deleteRecipe(recipe)">
+                   <span class="glyphicon glyphicon-trash"></span> Delete
+                </button>
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="row" ng-hide="recipes.length">
+    <p class="text-center col-md-4 col-md-offset-4"><em>It doesn't look like you have any recipes yet. Try adding some.</em></p>
+</div>
+<div class="row" ng-show="recipes.length">
+    <div class="col-md-6 col-md-offset-3">
+        <div class="input-group input-group-lg">
+            <button class="btn btn-success form-control" ng-click="getList(num)">
+                <span class="logo" id="mainbtn">Optimalist</span>
+            </button>
+            <span class="input-group-addon">for</span>
+            <input id="numofrecipes" type="number" ng-model="num" class="form-control">
+            <span class="input-group-addon">recipes</span>
+        </div>
+    </div>
+</div>
+<add-form ng-show="showForm"></add-form>
+<grocery-list ng-show="groceryList"></grocery-list>

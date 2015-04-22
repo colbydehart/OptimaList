@@ -1,0 +1,53 @@
+﻿<div class="col-sm-6 col-sm-offset-3">
+	<form ng-submit="signup()" name="freg" novalidate>
+        <h2 class="form-login-heading">Signup</h2>
+		<div class="form-group">
+		    <input class="form-control"
+		    	type="email"
+		    	name="em"
+		    	placeholder="Email"
+		    	ng-model="user.Email" />
+            <div class="alert alert-warning" 
+                 ng-show="freg.em.$dirty && freg.em.$error.email">
+                 You must enter a valid email.
+            </div>
+            <div class="alert alert-warning" 
+                 ng-show="freg.em.$dirty && freg.em.$error.required">
+                 You must enter an email.
+            </div>
+		</div>
+		<div class="form-group">
+		    <input 
+		    	class="form-control" 
+		    	name="p1" 
+		    	type="password" 
+		    	required
+		    	minlength="6"
+		    	placeholder="Password" 
+		    	ng-model="user.Password" />
+            <div class="alert alert-warning" 
+                 ng-show="freg.p1.$dirty && freg.p1.$error.minlength">
+                 Password must be at least 6 characters.
+            </div>
+            <div class="alert alert-warning" 
+                 ng-show="freg.p1.$dirty && freg.p1.$error.required">
+                 You must enter a password
+            </div>
+		</div>
+		<div class="form-group">
+		    <input 
+		    	class="form-control" 
+		    	name="p2"
+		    	type="password" 
+		    	placeholder="Confirm Password" 
+		    	ng-model="user.ConfirmPassword" />
+            <div class="alert alert-warning" 
+                 ng-show="freg.p2.$dirty && user.Password != user.ConfirmPassword">
+                 Passwords must match.
+            </div>
+		</div>
+		<div class="form-group">
+		    <button class="btn btn-info btn-block" type="submit">Register</button>
+	    </div>
+	</form>
+</div>

@@ -1,0 +1,69 @@
+<div class="modal" style="display:block">
+    <div class="modal-dialog modal-lg">
+        <form name="fadd" class="form-inline modal-content container" ng-submit="addRecipe()" novalidate>
+            <div class="modal-header">
+                <button class="close"  ng-click="showForm = !showForm">
+                    <span class="glyphicon glyphicon-remove"></span>
+                </button>
+                <h2>Add a Recipe</h2>
+                <p>
+                Please fill out the information for the recipe. Input ingredients undeneath. Leave
+                the "Unit" input blank if there is no unit of measurement for the item (i.e "four
+                potatoes" would have no unit). Try to use the simplest name for the ingredient for
+                optimal matching when creating grocery lists (like "button mushrooms" instead of
+                "buttons", "feta cheese" instead of "feta", and "olive oil" instead of "EVOO").
+                </p>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <h2>Recipe</h2>
+                    <div class="form-group col-xs-6">
+                        <label for="name">Name</label>
+                        <input ng-model="newRecipe.name" required name="name" class="form-control" type="text">
+                        <div class="alert alert-warning" ng-show="fadd.name.$dirty && fadd.name.$error.required">
+                            Recipes must have a name.
+                        </div>
+                    </div>
+                    <div class="form-group col-xs-6">
+                        <label for="url">Url</label>
+                        <input ng-model="newRecipe.url" name="url" class="form-control" type="text">
+                    </div>
+                </div>    
+                <h2>Ingredients</h2>
+                <div class="row">
+                    <div class="col-xs-6">
+                        <label>Name</label>
+                    </div>
+                    <div class="col-xs-3">
+                        <label>Quantity</label>
+                    </div>
+                    <div class="col-xs-3">
+                        <label>Unit</label>
+                    </div>
+                </div>
+                <div id="ingredients">
+                    <div class="row" ng-repeat="ing in ingredients">
+                        <div class="col-xs-6">
+                            <input ng-model="ing.name" class="form-control" type="text">
+                        </div>
+                        <div class="col-xs-3">
+                            <input ng-model="ing.quantity" class="form-control" type="number">
+                        </div>
+                        <div class="col-xs-3">
+                            <select ng-model="ing.measurement" class="form-control" ng-options="unit.label for unit in units">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div> 
+            <div class="modal-footer">
+                <button class="btn btn-default" ng-click="showForm = !showForm">
+                    <span class="glyphicon glyphicon-remove"></span> Cancel
+                </button>
+                <button class="btn btn-primary" type="submit">
+                    <span class="glyphicon glyphicon-ok"></span> Add
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

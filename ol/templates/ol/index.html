@@ -1,10 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="OptimaList">
 <head>
     <meta charset="UTF-8">
     <title>OptimaList</title>
+    <link rel="stylesheet" href="/static/ol/vendor/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/ol/main.css">
+    <link href='http://fonts.googleapis.com/css?family=Josefin+Sans:400,700,400italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
 </head>
 <body>
-    Yo Yo Yo, dude
+    <header ng-include="'/static/ol/includes/_header.html'"></header>
+    <div id="container">
+       <div class="container" ng-view></div> 
+    </div>
+     <footer ng-include="'/static/ol/includes/_footer.html'"></footer>
+    <script src="/static/ol/vendor/lodash/lodash.js"></script>
+    <script src="/static/ol/vendor/jquery/dist/jquery.js"></script>
+    <script src="/static/ol/vendor/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="/static/ol/vendor/angular/angular.js"></script>
+    <script src="/static/ol/vendor/angular-route/angular-route.js"></script>
+    <script src="/static/ol/vendor/restangular/dist/restangular.js"></script>
+    <script src="/static/ol/vendor/angular-local-storage/dist/angular-local-storage.js"></script>
+    <script src="/static/ol/app.js"></script>
 </body>
 </html>
