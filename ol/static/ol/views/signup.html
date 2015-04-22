@@ -6,7 +6,7 @@
 		    	type="email"
 		    	name="em"
 		    	placeholder="Email"
-		    	ng-model="user.Email" />
+		    	ng-model="user.email" />
             <div class="alert alert-warning" 
                  ng-show="freg.em.$dirty && freg.em.$error.email">
                  You must enter a valid email.
@@ -24,7 +24,7 @@
 		    	required
 		    	minlength="6"
 		    	placeholder="Password" 
-		    	ng-model="user.Password" />
+		    	ng-model="user.password" />
             <div class="alert alert-warning" 
                  ng-show="freg.p1.$dirty && freg.p1.$error.minlength">
                  Password must be at least 6 characters.
@@ -40,9 +40,9 @@
 		    	name="p2"
 		    	type="password" 
 		    	placeholder="Confirm Password" 
-		    	ng-model="user.ConfirmPassword" />
+		    	ng-model="ConfirmPassword" />
             <div class="alert alert-warning" 
-                 ng-show="freg.p2.$dirty && user.Password != user.ConfirmPassword">
+                 ng-show="freg.p2.$dirty && user.password != ConfirmPassword">
                  Passwords must match.
             </div>
 		</div>

@@ -72,6 +72,7 @@ WSGI_APPLICATION = 'optimaList.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(),
+    'ENGINE': 'django.db.backends.postgresql_psycopg2',
 }
 
 # Internationalization

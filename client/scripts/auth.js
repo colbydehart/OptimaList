@@ -4,11 +4,11 @@ angular.module('OptimaList')
     $routeProvider
     .when('/register', {
         controller: 'SignupController',
-        templateUrl: '/Client/Views/signup.html'
+        templateUrl: '/static/ol/views/signup.html'
     })
     .when('/login', {
         controller: 'LoginController',
-        templateUrl: '/Client/Views/login.html'
+        templateUrl: '/static/ol/views/login.html'
     });
 }])
 /************************************************
@@ -19,9 +19,10 @@ angular.module('OptimaList')
     
     $scope.signup = function(){
         var usr= $scope.user;
+        usr.username = usr.email;
         authService.register(usr).then(
             function(res){
-                authService.login({username:usr.Email, password:usr.Password}).then(function(){
+                authService.login({username:usr.email, password:usr.password}).then(function(){
                     $location.path('recipes');
                 },
                 function(err){
@@ -61,16 +62,15 @@ angular.module('OptimaList')
 .factory('authService', ['$http', '$q', 'localStorageService', '$rootScope',
                  function($http,   $q,   localStorageService,   $rootScope){
 
-    var base = '/';
     var as = {};
     function _register(user){
-        return $http.post(base + 'Register', user);
+        return $http.post('/register/', user);
     }
+
     function _login(user){
-        user.grant_type = 'password';
         var deferred = $q.defer()
 
-        $.post('/Token', user)
+        $.post('/token/', user)
         .then(function(data){
            localStorageService.set('auth', {
                token: data.access_token,

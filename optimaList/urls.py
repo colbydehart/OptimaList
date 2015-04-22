@@ -6,7 +6,7 @@ from ol import views
 
 urlpatterns = [
     url(r'^register/$', views.Register.as_view()),
-    url(r'^token/', obtain_auth_token),
+    url(r'^token/$', obtain_auth_token),
     url(r'^api/list/$', views.OptimaList.as_view()),
     url(r'^api/recipes/$', views.RecipeList.as_view()),
     url(r'^api/recipes/(?P<pk>[0-9]+)$', views.RecipeDetail.as_view()),
