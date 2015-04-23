@@ -16,7 +16,7 @@ angular.module('OptimaList')
             var proms = [];
             _.each(scope.groceryList.recipes, function(el){
                 proms.push( 
-                    _.find(scope.recipes, {ID: el.ID}).remove()
+                    _.find(scope.recipes, {id: el.id}).remove()
                 );
             });
             $q.all(proms)
@@ -26,7 +26,7 @@ angular.module('OptimaList')
     };
 
     return {
-        templateUrl: "/Client/Directives/list.html",
+        templateUrl: "/static/ol/directives/list.html",
         restrict: 'E',
         link : _link
     };

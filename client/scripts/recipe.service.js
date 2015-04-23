@@ -17,7 +17,7 @@ angular.module('OptimaList')
     };
 
     var _getOptimaList = function(num) {
-        return _baseRecipes.get("List", {num: num});
+        return _baseRecipes.get("list", {rate: num});
     };
 
     

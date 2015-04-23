@@ -44,5 +44,5 @@ def flatten_ingredients(recipes):
                     'volume':0,
                     'unit':0
                 }
-            res[name][con[0]]= con[1]
+            res[name][con[0]] += con[1]
     return res

@@ -3,7 +3,7 @@ angular.module('OptimaList')
     $routeProvider
     .when('/recipes', {
         controller: 'RecipeController',
-        templateUrl: '/Client/Views/recipes.html'
+        templateUrl: '/static/ol/views/recipes.html'
     });
 }])
 /***********************************************
@@ -66,7 +66,7 @@ angular.module('OptimaList')
             $scope.groceryList = list;
             $('html').append(print);
         }, function(err) {
-            console.log(err);
+            document.write(err.data);
         });
     };
 

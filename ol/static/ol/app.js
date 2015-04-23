@@ -32,12 +32,11 @@ angular.module('OptimaList', ['restangular', 'ngRoute', 'LocalStorageModule'])
 /************************************************
                 HOME CONTROLLER
 ************************************************/
-.controller('HomeController', ['localStorageService', '$location', function (localStorageService, $location)  {
+.controller('HomeController', ['localStorageService', '$location', '$scope', function (localStorageService, $location, $scope)  {
     var auth = localStorageService.get('auth');
     if (auth){
         $location.path('recipes')
     }
-
 }])
 /************************************************
                 HEADER CONTROLLER
@@ -176,7 +175,7 @@ angular.module('OptimaList')
     $routeProvider
     .when('/recipes/:id', {
         controller: 'DetailsController',
-        templateUrl: '/Client/Views/detail.html'
+        templateUrl: '/static/ol/views/detail.html'
     });
 }])
 .controller('DetailsController', ['$scope', 'recipeService', '$routeParams', 
@@ -205,7 +204,7 @@ angular.module('OptimaList')
             var proms = [];
             _.each(scope.groceryList.recipes, function(el){
                 proms.push( 
-                    _.find(scope.recipes, {ID: el.ID}).remove()
+                    _.find(scope.recipes, {id: el.id}).remove()
                 );
             });
             $q.all(proms)
@@ -215,7 +214,7 @@ angular.module('OptimaList')
     };
 
     return {
-        templateUrl: "/Client/Directives/list.html",
+        templateUrl: "/static/ol/directives/list.html",
         restrict: 'E',
         link : _link
     };
@@ -247,9 +246,9 @@ angular.module('OptimaList')
             });
             recipeService.createRecipe(scope.newRecipe, scope.ingredients).then(function(data){
                 return recipeService.allRecipes();
-            }, console.log).then(function(data) {
+            }, function(err){document.write(err.data)}).then(function(data) {
                 scope.recipes = data;
-            }).catch(console.log);
+            }, function(err){document.write(err.data)});
             scope.newRecipe = {};
             scope.ingredients = [{
                 name: "",
@@ -278,7 +277,7 @@ angular.module('OptimaList')
     };
 
     return {
-        templateUrl: "/Client/Directives/addForm.html",
+        templateUrl: "/static/ol/directives/addForm.html",
         restrict: 'E',
         link : _link
     };
@@ -289,7 +288,7 @@ angular.module('OptimaList')
     $routeProvider
     .when('/recipes', {
         controller: 'RecipeController',
-        templateUrl: '/Client/Views/recipes.html'
+        templateUrl: '/static/ol/views/recipes.html'
     });
 }])
 /***********************************************
@@ -352,7 +351,7 @@ angular.module('OptimaList')
             $scope.groceryList = list;
             $('html').append(print);
         }, function(err) {
-            console.log(err);
+            document.write(err.data);
         });
     };
 
@@ -377,7 +376,7 @@ angular.module('OptimaList')
     };
 
     var _getOptimaList = function(num) {
-        return _baseRecipes.get("List", {num: num});
+        return _baseRecipes.get("list", {rate: num});
     };
 
     

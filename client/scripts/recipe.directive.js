@@ -24,9 +24,9 @@ angular.module('OptimaList')
             });
             recipeService.createRecipe(scope.newRecipe, scope.ingredients).then(function(data){
                 return recipeService.allRecipes();
-            }, console.log).then(function(data) {
+            }, function(err){document.write(err.data)}).then(function(data) {
                 scope.recipes = data;
-            }).catch(console.log);
+            }, function(err){document.write(err.data)});
             scope.newRecipe = {};
             scope.ingredients = [{
                 name: "",
@@ -55,7 +55,7 @@ angular.module('OptimaList')
     };
 
     return {
-        templateUrl: "/Client/Directives/addForm.html",
+        templateUrl: "/static/ol/directives/addForm.html",
         restrict: 'E',
         link : _link
     };

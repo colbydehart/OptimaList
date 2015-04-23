@@ -3,7 +3,7 @@ angular.module('OptimaList')
     $routeProvider
     .when('/recipes/:id', {
         controller: 'DetailsController',
-        templateUrl: '/Client/Views/detail.html'
+        templateUrl: '/static/ol/views/detail.html'
     });
 }])
 .controller('DetailsController', ['$scope', 'recipeService', '$routeParams', 

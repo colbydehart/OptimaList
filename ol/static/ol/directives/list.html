@@ -7,7 +7,7 @@
                 </button> <h2>Your OptimaList</h2> <p><em>
                     You can make
                     <span ng-repeat="rec in groceryList.recipes">
-                        <a href="{{rec.Url}}">{{rec.Name}}</a><span ng-if="!$last && groceryList.recipes.length > 2">,</span><span ng-if="$index == groceryList.recipes.length -2"> and</span>
+                        <a href="{{rec.Url}}">{{rec.name}}</a><span ng-if="!$last && groceryList.recipes.length > 2">,</span><span ng-if="$index == groceryList.recipes.length -2"> and</span>
                     </span>
                     with the following ingredients. if you want to remove these recipes
                     from your pool, just click the "delete" button at the bottom of the list.

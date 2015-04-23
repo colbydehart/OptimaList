@@ -32,12 +32,11 @@
 /************************************************
                 HOME CONTROLLER
 ************************************************/
-.controller('HomeController', ['localStorageService', '$location', function (localStorageService, $location)  {
+.controller('HomeController', ['localStorageService', '$location', '$scope', function (localStorageService, $location, $scope)  {
     var auth = localStorageService.get('auth');
     if (auth){
         $location.path('recipes')
     }
-
 }])
 /************************************************
                 HEADER CONTROLLER

@@ -103,6 +103,6 @@ class OptimaList(APIView):
 
     def get(self, request):
         recipes = Recipe.objects.filter(owner=request.user)
-        rate = request.GET.get('rate', 3)
+        rate = int(request.GET.get('rate', 3))
         opt_list = optimize(recipes, rate)
         return Response(opt_list)

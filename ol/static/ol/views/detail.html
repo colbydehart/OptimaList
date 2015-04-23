@@ -1,5 +1,5 @@
 <h1>
-    {{recipe.Name}}
+    {{recipe.recipe.name}}
 </h1>
 <table class="table-striped table">
     <tr>
@@ -7,9 +7,9 @@
         <th>Quantity</th>
         <th>Measurement</th>
     </tr>
-    <tr ng-repeat="item in recipe.RecipeItems">
-        <td> {{item.Ingredient.Name}} </td>
-        <td> {{item.Measurement}} </td>
-        <td> {{item.Quantity}} </td>
+    <tr ng-repeat="item in recipe.items">
+        <td> {{item.ingredient}} </td>
+        <td> {{item.quantity}} </td>
+        <td> {{item.measurement === 'none' ? '' : item.measurement}} </td>
     </tr>
 </table>
