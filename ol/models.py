@@ -27,7 +27,7 @@ class RecipeItem(models.Model):
     recipe = models.ForeignKey(Recipe)
     ingredient = models.ForeignKey(Ingredient)
     measurement = models.CharField(max_length=60)
-    quantity = models.DecimalField(max_digits=10, decimal_places=3)
+    quantity = models.FloatField()
 
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
