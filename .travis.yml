@@ -1,9 +1,16 @@
 language: elixir
 elixir:
-  - 1.4.0
+- 1.4.0
 install:
-  - mix local.rebar --force
-  - mix local.hex --force
-  - mix deps.get
+- mix local.rebar --force
+- mix local.hex --force
+- mix deps.get
 script:
-  - mix test
+- mix test
+deploy:
+  provider: heroku
+  api_key:
+    secure: WnNfToIQbkZ0FfAR+3Y/HcDsDUZrC5MRME0Oj3dBhNH8lFWlt3c8ONVCJk7EcT71XsYAOVwMuuy7QiTAmkIJFH1WF7RRNmnsORtm+BCdEFWJX0oeTp967Dm4fHepBfhhGm+9niK5Cw1Xns/4DkCKg2MCkrcpJ5PN7PiXUQ6VFgo=
+  app: optimalist-api
+  on: master
+
