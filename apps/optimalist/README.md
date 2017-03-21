@@ -1,3 +1,0 @@
-# Optimalist
-
-**TODO: Add description**

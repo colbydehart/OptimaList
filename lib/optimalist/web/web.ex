@@ -27,7 +27,7 @@ defmodule Optimalist.Web do
 
   def view do
     quote do
-      use Phoenix.View, root: "lib/optimalist_web/templates",
+      use Phoenix.View, root: "lib/optimalist/web/templates",
                         namespace: Optimalist.Web
 
       # Import convenience functions from controllers

@@ -1,5 +1,5 @@
 defmodule Optimalist.Web.Endpoint do
-  use Phoenix.Endpoint, otp_app: :optimalist_web
+  use Phoenix.Endpoint, otp_app: :optimalist
 
   socket "/socket", Optimalist.Web.UserSocket
 
@@ -8,7 +8,7 @@ defmodule Optimalist.Web.Endpoint do
   # You should set gzip to true if you are running phoenix.digest
   # when deploying your static files in production.
   plug Plug.Static,
-    at: "/", from: :optimalist_web, gzip: false,
+    at: "/", from: :optimalist, gzip: false,
     only: ~w(css fonts images js favicon.ico robots.txt)
 
   # Code reloading can be explicitly enabled under the
@@ -33,8 +33,8 @@ defmodule Optimalist.Web.Endpoint do
   # Set :encryption_salt if you would also like to encrypt it.
   plug Plug.Session,
     store: :cookie,
-    key: "_optimalist_web_key",
-    signing_salt: "SzTCKRAh"
+    key: "_optimalist_key",
+    signing_salt: "qNAF2kQA"
 
   plug Optimalist.Web.Router
 
