@@ -28,9 +28,14 @@ defmodule Optimalist.Mixfile do
   #
   # Type `mix help deps` for examples and options.
   defp deps do
-    [{:phoenix, "~> 1.3.0-rc"},
+    [{:phoenix, "~> 1.3.0-rc", override: true},
      {:phoenix_pubsub, "~> 1.0"},
      {:gettext, "~> 0.11"},
+     {:ecto, "~> 2.1"},
+     {:bolt_sips, "~> 0.2"},
+     {:credo, "~> 0.7", only: [:dev, :test]},
+     {:guardian, "~> 0.14.2"},
+     {:comeonin, "~> 3.0"},
      {:cowboy, "~> 1.0"}]
   end
 end
