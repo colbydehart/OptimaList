@@ -9,8 +9,15 @@ defmodule Optimalist.Accounts do
   alias Optimalist.DB
 
   def login(params) do
-    with {:ok, user} <- DB.get_user(params["email"]),
+    with {:ok, user} <- DB.get_user_by_email(params["email"]),
          true <- check_pw(user, params["password"]) do
+      {:ok, user}
+    end
+  end
+
+  def register(params) do
+    with cs <- User.registration_changeset(%User{}, params),
+         {:ok, user} <- DB.create_user(cs) do
       {:ok, user}
     end
   end

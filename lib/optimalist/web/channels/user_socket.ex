@@ -2,7 +2,7 @@ defmodule Optimalist.Web.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  channel "*", Optimalist.Web.ApiChannel
+  # channel "*", Optimalist.Web.UserChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket

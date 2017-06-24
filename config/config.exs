@@ -28,7 +28,7 @@ config :guardian, Guardian,
 
 # Neo4j configuration
 config :bolt_sips, Bolt,
-  url: "neo4j:neo4j@localhost:7687",
+  url: "neo4j:admin@localhost:7687",
   pool_size: 5,
   max_overflow: 2
 

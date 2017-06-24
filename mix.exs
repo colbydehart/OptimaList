@@ -36,6 +36,7 @@ defmodule Optimalist.Mixfile do
      {:credo, "~> 0.7", only: [:dev, :test]},
      {:guardian, "~> 0.14.2"},
      {:comeonin, "~> 3.0"},
-     {:cowboy, "~> 1.0"}]
+     {:cowboy, "~> 1.0"},
+     {:faker, "~> 0.8", only: :test}]
   end
 end

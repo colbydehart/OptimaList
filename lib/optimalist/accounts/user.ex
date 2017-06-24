@@ -4,7 +4,7 @@ defmodule Optimalist.Accounts.User do
 
   @allowed [:email, :name]
 
-  schema "accounts_users" do
+  embedded_schema do
     field :password, :string, virtual: true
     field :email, :string
     field :hash, :string
@@ -22,10 +22,12 @@ defmodule Optimalist.Accounts.User do
 
   def registration_changeset(user, params) do
     user
+    |> changeset(params)
     |> cast(params, [:password])
     |> validate_required([:password])
     |> validate_length(:password, min: 6, message: "password must be at least 6 characters")
     |> hash_password
+    |> delete_change(:password)
   end
 
   defp hash_password(changeset) do
