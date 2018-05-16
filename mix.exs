@@ -37,7 +37,9 @@ defmodule Optimalist.Mixfile do
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
       {:absinthe_plug, "~> 1.4.0"},
-      {:bolt_sips, "~> 0.4"}
+      {:bolt_sips, "~> 0.4"},
+      {:cors_plug, "~> 1.5"},
+      {:credo, "~> 0.9.1", only: [:dev, :test], runtime: false}
     ]
   end
 end

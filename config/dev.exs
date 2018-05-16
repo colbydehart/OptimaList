@@ -32,6 +32,12 @@ config :optimalist, OptimalistWeb.Endpoint,
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"
 
+# Bolt Sips
+config :bolt_sips, Bolt,
+  url: "test:test@localhost:7687",
+  pool_size: 5,
+  max_overflow: 2
+
 # Set a higher stacktrace during development. Avoid configuring such
 # in production as building large stacktraces may be expensive.
 config :phoenix, :stacktrace_depth, 20

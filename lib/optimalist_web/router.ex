@@ -15,5 +15,7 @@ defmodule OptimalistWeb.Router do
       interface: :simple,
       context: %{pubsub: OptimalistWeb.Endpoint}
     )
+
+    forward("/graphql", Absinthe.Plug, schema: OptimalistWeb.Schema)
   end
 end

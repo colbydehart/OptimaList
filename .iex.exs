@@ -1,0 +1,2 @@
+alias OptimalistWeb.Mutations
+alias OptimalistWeb.Resolvers

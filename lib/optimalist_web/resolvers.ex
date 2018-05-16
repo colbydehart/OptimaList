@@ -1,5 +1,9 @@
 defmodule OptimalistWeb.Resolvers do
+  @moduledoc """
+  All of the resolvers for the graphql queries and mutations
+  """
   alias Bolt.Sips
+  import OptimalistWeb.Util
 
   def all_recipes(_parent, _args, _resolution) do
     query = """
@@ -15,6 +19,25 @@ defmodule OptimalistWeb.Resolvers do
 
       _ ->
         {:error, "Could not fetch recipes"}
+    end
+  end
+
+  def recipe_detail(_parent, %{id: id}, _resolution) do
+    query = """
+    MATCH (recipe:Recipe)
+    WHERE id(recipe) = {id}
+    RETURN recipe
+    """
+
+    case Sips.query(Sips.conn(), query, %{id: String.to_integer(id)}) do
+      {:ok, recipes} ->
+        recipes
+        |> hd()
+        |> flatten_node("recipe")
+        |> (&{:ok, &1}).()
+
+      _ ->
+        {:error, "Could not fetch Recipe"}
     end
   end
 
@@ -38,7 +61,7 @@ defmodule OptimalistWeb.Resolvers do
 
   def recipe_ingredient_recipe(parent, _args, _resolution) do
     query = """
-    MATCH (ingredient: Ingredient)<-[ri: Requires]-()
+    MATCH (ingredient: Ingredient)<-[ri:Requires]-()
     WHERE id(ri) = {id}
     RETURN DISTINCT ingredient
     """
@@ -53,30 +76,5 @@ defmodule OptimalistWeb.Resolvers do
       _ ->
         {:error, "Could not fetch recipe."}
     end
-  end
-
-  @spec flatten_nodes([Sips.Response], binary) :: [map]
-  defp flatten_nodes(nodes, key \\ "node"), do: Enum.map(nodes, &flatten_node(&1, key))
-
-  @spec flatten_node(Sips.Response, binary) :: map
-  defp flatten_node(node, key \\ "node") do
-    data = Map.get(node, key)
-
-    data.properties
-    |> Map.put("id", data.id)
-    |> atomize_map
-  end
-
-  @spec atomize_map(map) :: map
-  defp atomize_map(map) do
-    map
-    |> Enum.map(fn {k, v} ->
-      if is_atom(k) do
-        {k, v}
-      else
-        {String.to_existing_atom(k), v}
-      end
-    end)
-    |> Enum.into(%{})
   end
 end
