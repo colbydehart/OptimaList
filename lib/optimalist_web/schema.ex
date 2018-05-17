@@ -57,6 +57,10 @@ defmodule OptimalistWeb.Schema do
 
       resolve(&Resolvers.recipe_detail/3)
     end
+
+    field :optimalist, non_null(list_of(non_null(:recipe))) do
+      resolve(&Resolvers.optimalist/3)
+    end
   end
 
   mutation do

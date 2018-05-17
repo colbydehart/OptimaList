@@ -23,6 +23,9 @@ config :bolt_sips, Bolt,
   pool_size: 5,
   max_overflow: 2
 
+# Absinthe
+config :absinthe, :schema, OptimalistWeb.Schema
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"

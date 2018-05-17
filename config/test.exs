@@ -8,3 +8,8 @@ config :optimalist, OptimalistWeb.Endpoint,
 
 # Print only warnings and errors during test
 config :logger, level: :warn
+
+config :bolt_sips, Bolt,
+  url: "neo4j:neo4j@localhost:7687",
+  pool_size: 5,
+  max_overflow: 2

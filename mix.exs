@@ -32,14 +32,23 @@ defmodule Optimalist.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      # Phoenix
       {:phoenix, "~> 1.3.2"},
       {:phoenix_pubsub, "~> 1.0"},
-      {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
-      {:absinthe_plug, "~> 1.4.0"},
-      {:bolt_sips, "~> 0.4"},
+      {:gettext, "~> 0.11"},
       {:cors_plug, "~> 1.5"},
-      {:credo, "~> 0.9.1", only: [:dev, :test], runtime: false}
+
+      # GraphQL
+      {:absinthe_plug, "~> 1.4.0"},
+
+      # Neo4J
+      {:bolt_sips, "~> 0.4"},
+
+      # Dev Stuff
+      {:dialyxir, "~> 0.5", only: ~w(dev test)a, runtime: false},
+      {:credo, ">= 0.9.1", only: ~w(dev test)a, runtime: false},
+      {:phoenix_live_reload, "~> 1.0", only: :dev}
     ]
   end
 end

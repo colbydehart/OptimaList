@@ -77,4 +77,29 @@ defmodule OptimalistWeb.Resolvers do
         {:error, "Could not fetch recipe."}
     end
   end
+
+  def optimalist(_, _, _) do
+    query = """
+    MATCH (r:Recipe)-[*0..2]-(rel:Recipe)
+    WHERE NOT(id(r) IN {acc})
+    AND
+      id(rel) IN CASE
+        WHEN SIZE({acc}) <> 0 THEN {acc}
+        ELSE [id(rel)]
+      END
+    WITH r, COUNT(rel) AS count
+    ORDER BY count DESC
+    RETURN r
+    LIMIT 1
+    """
+
+    with {:ok, recipe_1} <- Sips.query(Sips.conn(), query, %{acc: []}),
+         {:ok, recipe_2} <- Sips.query(Sips.conn(), query, %{acc: [600]}),
+         {:ok, recipe_3} <- Sips.query(Sips.conn(), query, %{acc: [660, 600]}) do
+      [recipe_1, recipe_2, recipe_3]
+      |> Enum.map(&hd/1)
+      |> Enum.map(&flatten_node(&1, "r"))
+      |> (&{:ok, &1}).()
+    end
+  end
 end

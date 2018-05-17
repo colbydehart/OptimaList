@@ -1,0 +1,21 @@
+[
+  {
+    "name": "bread",
+    "recipe_ingredients": [
+      {
+        "amount": 1,
+        "measurement": "cup",
+        "ingredient": {
+          "name": "flour"
+        }
+      },
+      {
+        "amount": 1,
+        "measurement": "cup",
+        "ingredient": {
+          "name": "water"
+        }
+      }
+    ]
+  }
+]
