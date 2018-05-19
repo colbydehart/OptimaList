@@ -12,7 +12,7 @@ config :optimalist, OptimalistWeb.Endpoint,
   render_errors: [view: OptimalistWeb.ErrorView, accepts: ~w(json)],
   pubsub: [name: Optimalist.PubSub, adapter: Phoenix.PubSub.PG2]
 
-config :optimalist, salt: {:system, "SALT"}
+config :optimalist, salt: System.get_env("SALT")
 
 # Configures Elixir's Logger
 config :logger, :console,
@@ -21,18 +21,23 @@ config :logger, :console,
 
 # Bolt Sips
 config :bolt_sips, Bolt,
-  url: "neo4j:pass@localhost:7687",
+  url: System.get_env("GRAPHENEDB_BOLT_URL"),
+  basic_auth: [
+    username: System.get_env("GRAPHENEDB_BOLT_USER"),
+    password: System.get_env("GRAPHENEDB_BOLT_PASSWORD")
+  ],
   pool_size: 5,
-  max_overflow: 2
+  max_overflow: 2,
+  ssl: true
 
 # Absinthe
 config :absinthe, :schema, OptimalistWeb.Schema
 
 # SMS
 config :ex_twilio,
-  account_sid: {:system, "TWILIO_ACCOUNT_SID"},
-  auth_token: {:system, "TWILIO_AUTH_TOKEN"},
-  from: {:system, "TWILIO_FROM"}
+  account_sid: System.get_env("TWILIO_ACCOUNT_SID"),
+  auth_token: System.get_env("TWILIO_AUTH_TOKEN"),
+  from: System.get_env("TWILIO_FROM")
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

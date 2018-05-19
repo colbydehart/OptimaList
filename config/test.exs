@@ -12,10 +12,10 @@ config :optimalist, salt: "secretsalt"
 config :logger, level: :warn
 
 config :bolt_sips, Bolt,
-  url: "neo4j:neo4j@localhost:7687",
+  url: "test:test@localhost:7687",
   pool_size: 5,
   max_overflow: 2
 
-
-import_config "test.secret.exs"
-
+if File.exists?("test.secret.exs") do
+  import_config "test.secret.exs"
+end

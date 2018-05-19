@@ -1,3 +1,8 @@
 language: elixir
 elixir:
-  - 1.6
+- 1.6
+deploy:
+  provider: heroku
+  app: optimalist
+  api_key:
+    secure: ke4t67vfQRAuqDos9TQJcmF9lDvrc80Z0ZXeH9AkwnXRGyouVw79nvs6+avffwJip40YQgxMRNF2vWMR52SFA4FZr7C6odMneExcij49HtaGtAUVfz8KqrUmQOtPXZYGySZwRDpx62FzketBKcSI4d8FNAIS+mFUT9K9hAXuR4E=
