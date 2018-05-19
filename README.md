@@ -1,3 +1,4 @@
+![](https://api.travis-ci.org/colbydehart/OptimaList-api.svg?branch=master)
 # Optimalist
 
 To start your Phoenix server:

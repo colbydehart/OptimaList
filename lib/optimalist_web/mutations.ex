@@ -2,10 +2,12 @@ defmodule OptimalistWeb.Mutations do
   alias Bolt.Sips
   import OptimalistWeb.Util
 
-  def create_recipe(_parent, args = %{recipe_ingredients: ris}, _resolution)
-      when length(ris) > 0 do
+  def create_recipe(_parent, args, %{context: %{user: user}}) do
     query = """
-    CREATE (recipe:Recipe {name: {name}})
+    MATCH (u:User)
+    WHERE id(u) = {user_id}
+    CREATE (recipe:Recipe {name: {name}})<-[:Owns]-(u)
+    CREATE ()
     FOREACH (ri IN {recipe_ingredients} |
         MERGE (i:Ingredient {name: lower(ri.ingredient.name)})
         CREATE (recipe)-[r:Requires {amount: ri.amount, measurement: ri.measurement}]-> (i)
@@ -13,7 +15,7 @@ defmodule OptimalistWeb.Mutations do
     RETURN DISTINCT recipe
     """
 
-    case Sips.query(Sips.conn(), query, args) do
+    case Sips.query(Sips.conn(), query, Map.put(args, :user_id, user.id)) do
       {:ok, recipe} ->
         recipe
         |> hd()
@@ -25,7 +27,9 @@ defmodule OptimalistWeb.Mutations do
     end
   end
 
-  def update_recipe(_parent, args, _resolution) do
+  def create_recipe(_, _, _), do: {:error, "unauthenticated"}
+
+  def update_recipe(_parent, args, %{context: %{user: user}}) do
     query = """
     MERGE (r:Recipe {id: {id}})
     """
@@ -41,23 +45,79 @@ defmodule OptimalistWeb.Mutations do
     end
   end
 
-  def delete_recipe(_parent, %{id: id}, _resolution) do
+  def update_recipe(_, _, _), do: {:error, "unauthenticated"}
+
+  def delete_recipe(_parent, %{id: id}, %{context: %{user: user}}) do
     query = """
-    MATCH (recipe:Recipe)-[rel:Requires]->(:Ingredient)
+    MATCH (u:User)-[:Owns]->(recipe:Recipe)
     WHERE id(recipe) = {id}
-    DELETE rel
-    DELETE recipe
-    RETURN recipe
+    AND id(u) = {user_id}
+    OPTIONAL MATCH (recipe)-[rel]-()
+    DELETE recipe, rel
+    RETURN "ok"
     """
 
-    case Sips.query(Sips.conn(), query, %{id: String.to_integer(id)}) do
-      {:ok, [recipe]} ->
-        recipe
-        |> flatten_node("recipe")
-        |> (&{:ok, &1}).()
+    case Sips.query(Sips.conn(), query, %{id: String.to_integer(id), user_id: user.id}) do
+      {:ok, _} ->
+        {:ok, %{message: "ok"}}
 
       _ ->
         {:error, "Could not delete recipe"}
+    end
+  end
+
+  def delete_recipe(_, _, _), do: {:error, "unauthenticated"}
+
+  def login(_, %{number: number}, _) do
+    token =
+      Phoenix.Token.sign(OptimalistWeb.Endpoint, Application.get_env(:optimalist, :salt), number)
+
+    code =
+      0..5
+      |> Enum.map(fn _ -> Enum.random([1, 2, 3, 4, 5, 6]) end)
+      |> Enum.join()
+
+    query = """
+    MERGE (user:User {number: {number}})
+    SET user.token = {token}
+    SET user.code = {code}
+    RETURN user
+    LIMIT 1
+    """
+
+    case Sips.query(Sips.conn(), query, %{number: number, token: token, code: code}) do
+      {:ok, user} ->
+        ExTwilio.Message.create(%{
+          from: Application.get_env(:ex_twilio, :from),
+          to: number,
+          body: "#{code} is your authentication token to login."
+        })
+
+        {:ok, %{message: "sent"}}
+
+      _ ->
+        {:error, "Could not login at this time."}
+    end
+  end
+
+  def resolve_login(_, %{code: code}, _) do
+    query = """
+    MERGE (user:User {code: {code}})
+    RETURN user
+    """
+
+    with {:ok, [%{"user" => user}]} <- Sips.query(Sips.conn(), query, %{code: code}),
+         {:ok, _} <-
+           Phoenix.Token.verify(
+             OptimalistWeb.Endpoint,
+             Application.get_env(:optimalist, :salt),
+             user.properties["token"],
+             max_age: 86_400
+           ) do
+      {:ok, %{token: user.properties["token"]}}
+    else
+      _ ->
+        {:error, "Could not log in."}
     end
   end
 end

@@ -5,6 +5,10 @@ defmodule OptimalistWeb.Router do
     plug(:accepts, ["json"])
   end
 
+  pipeline :graphql do
+    plug(OptimalistWeb.Context)
+  end
+
   scope "/" do
     pipe_through(:api)
 
@@ -16,6 +20,9 @@ defmodule OptimalistWeb.Router do
       context: %{pubsub: OptimalistWeb.Endpoint}
     )
 
-    forward("/graphql", Absinthe.Plug, schema: OptimalistWeb.Schema)
+    scope "/" do
+      pipe_through(:graphql)
+      forward("/graphql", Absinthe.Plug, schema: OptimalistWeb.Schema)
+    end
   end
 end

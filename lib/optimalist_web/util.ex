@@ -1,18 +1,23 @@
 defmodule OptimalistWeb.Util do
-  @spec flatten_nodes([Sips.Response], binary) :: [map]
-  def flatten_nodes(nodes, key \\ "node"), do: Enum.map(nodes, &flatten_node(&1, key))
+  @spec flatten_nodes([Sips.Response], binary | nil) :: [map]
+  def flatten_nodes(nodes, key \\ nil), do: Enum.map(nodes, &flatten_node(&1, key))
 
   @doc """
   Takes in a response for a node and merges its properties with
   its ID then atomizes the resulting map
   """
-  @spec flatten_node(Sips.Response, binary) :: map
-  def flatten_node(node, key \\ "node") do
-    data = Map.get(node, key)
+  @spec flatten_node(Sips.Response, binary | nil) :: map
+  def flatten_node(node, key \\ nil) do
+    data =
+      case key do
+        nil -> node
+        _ -> Map.get(node, key)
+      end
 
-    data.properties
-    |> Map.put("id", data.id)
-    |> atomize_map
+    data =
+      data.properties
+      |> Map.put("id", data.id)
+      |> atomize_map
   end
 
   @doc """

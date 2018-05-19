@@ -12,6 +12,8 @@ config :optimalist, OptimalistWeb.Endpoint,
   render_errors: [view: OptimalistWeb.ErrorView, accepts: ~w(json)],
   pubsub: [name: Optimalist.PubSub, adapter: Phoenix.PubSub.PG2]
 
+config :optimalist, salt: {:system, "SALT"}
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
@@ -25,6 +27,12 @@ config :bolt_sips, Bolt,
 
 # Absinthe
 config :absinthe, :schema, OptimalistWeb.Schema
+
+# SMS
+config :ex_twilio,
+  account_sid: {:system, "TWILIO_ACCOUNT_SID"},
+  auth_token: {:system, "TWILIO_AUTH_TOKEN"},
+  from: {:system, "TWILIO_FROM"}
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

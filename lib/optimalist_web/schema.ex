@@ -29,6 +29,29 @@ defmodule OptimalistWeb.Schema do
     field(:name, non_null(:string))
   end
 
+  object :optimalist_response do
+    field(:recipes, non_null(list_of(non_null(:recipe))))
+    field(:list, non_null(list_of(non_null(:list_item))))
+  end
+
+  object :list_item do
+    field(:amount, non_null(:float))
+    field(:measurement, non_null(:string))
+    field(:name, non_null(:string))
+  end
+
+  object :login_response do
+    field(:message, non_null(:string))
+  end
+
+  object :resolve_login_response do
+    field(:token, non_null(:string))
+  end
+
+  object :delete_response do
+    field(:message, non_null(:string))
+  end
+
   input_object :recipe_input do
     field(:name, non_null(:string))
     field(:recipe_ingredients, non_null(list_of(non_null(:recipe_ingredient_input))))
@@ -58,7 +81,9 @@ defmodule OptimalistWeb.Schema do
       resolve(&Resolvers.recipe_detail/3)
     end
 
-    field :optimalist, non_null(list_of(non_null(:recipe))) do
+    field :optimalist, non_null(:optimalist_response) do
+      arg(:length, non_null(:integer))
+
       resolve(&Resolvers.optimalist/3)
     end
   end
@@ -66,6 +91,7 @@ defmodule OptimalistWeb.Schema do
   mutation do
     field :create_recipe, type: :recipe do
       arg(:name, non_null(:string))
+      arg(:url, :string)
       arg(:recipe_ingredients, non_null(list_of(non_null(:recipe_ingredient_input))))
 
       resolve(&Mutations.create_recipe/3)
@@ -77,10 +103,22 @@ defmodule OptimalistWeb.Schema do
       resolve(&Mutations.update_recipe/3)
     end
 
-    field :delete_recipe, :recipe do
+    field :delete_recipe, :delete_response do
       arg(:id, non_null(:id))
 
       resolve(&Mutations.delete_recipe/3)
+    end
+
+    field :login, :login_response do
+      arg(:number, non_null(:string))
+
+      resolve(&Mutations.login/3)
+    end
+
+    field(:resolve_login, :resolve_login_response) do
+      arg(:code, non_null(:string))
+
+      resolve(&Mutations.resolve_login/3)
     end
   end
 end

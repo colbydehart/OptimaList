@@ -39,6 +39,9 @@ defmodule Optimalist.Mixfile do
       {:gettext, "~> 0.11"},
       {:cors_plug, "~> 1.5"},
 
+      # SMS
+      {:ex_twilio, "~> 0.6.0"},
+
       # GraphQL
       {:absinthe_plug, "~> 1.4.0"},
 

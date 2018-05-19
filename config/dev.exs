@@ -13,6 +13,8 @@ config :optimalist, OptimalistWeb.Endpoint,
   check_origin: false,
   watchers: []
 
+config :optimalist, salt: "secretsalt"
+
 # ## SSL Support
 #
 # In order to use HTTPS in development, a self-signed
@@ -41,3 +43,5 @@ config :bolt_sips, Bolt,
 # Set a higher stacktrace during development. Avoid configuring such
 # in production as building large stacktraces may be expensive.
 config :phoenix, :stacktrace_depth, 20
+
+import_config "dev.secret.exs"
