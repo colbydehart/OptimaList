@@ -3,6 +3,9 @@ defmodule Optimalist.Measurements do
   this will convert all volume measurements to cups and all weight measurements to oz
   """
 
+  # Unit
+  def convert(item = %{measurement: "unit"}), do: item
+
   # Volume
   def convert(item = %{measurement: "cup"}), do: item
 
