@@ -1,8 +1,8 @@
-defmodule OptimalistWeb.Schema do
+defmodule Optimalist.GraphQL.Schema do
   use Absinthe.Schema
 
-  alias OptimalistWeb.Resolvers
-  alias OptimalistWeb.Mutations
+  alias Optimalist.GraphQL.Resolvers
+  alias Optimalist.GraphQL.Mutations
 
   object :recipe do
     field(:id, non_null(:id))

@@ -28,13 +28,14 @@ defmodule OptimalistWeb do
 
   def view do
     quote do
-      use Phoenix.View, root: "lib/optimalist_web/templates",
-                        namespace: OptimalistWeb
+      use Phoenix.View,
+        root: "lib/optimalist_web/templates",
+        namespace: OptimalistWeb
 
       # Import convenience functions from controllers
       import Phoenix.Controller, only: [get_flash: 2, view_module: 1]
 
-      import OptimalistWeb.Router.Helpers
+      alias OptimalistWeb.Router.Helpers, as: Routes
       import OptimalistWeb.ErrorHelpers
       import OptimalistWeb.Gettext
     end

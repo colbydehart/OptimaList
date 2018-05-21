@@ -15,14 +15,14 @@ defmodule OptimalistWeb.Router do
     forward(
       "/graphiql",
       Absinthe.Plug.GraphiQL,
-      schema: OptimalistWeb.Schema,
+      schema: Optimalist.GraphQL.Schema,
       interface: :simple,
       context: %{pubsub: OptimalistWeb.Endpoint}
     )
 
     scope "/" do
       pipe_through(:graphql)
-      forward("/graphql", Absinthe.Plug, schema: OptimalistWeb.Schema)
+      forward("/graphql", Absinthe.Plug, schema: Optimalist.GraphQL.Schema)
     end
   end
 end

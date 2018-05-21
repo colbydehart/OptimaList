@@ -1,26 +1,11 @@
-defmodule OptimalistWeb.Mutations do
-  alias Bolt.Sips
-  import OptimalistWeb.Util
+defmodule Optimalist.GraphQL.Mutations do
+  alias Optimalist.Neo4j.Repo
+  import Optimalist.Neo4j.Util
 
   def create_recipe(_parent, args, %{context: %{user: user}}) do
-    query = """
-    MATCH (u:User)
-    WHERE id(u) = {user_id}
-    CREATE (recipe:Recipe {name: {name}})<-[:Owns]-(u)
-    CREATE ()
-    FOREACH (ri IN {recipe_ingredients} |
-        MERGE (i:Ingredient {name: lower(ri.ingredient.name)})
-        CREATE (recipe)-[r:Requires {amount: ri.amount, measurement: ri.measurement}]-> (i)
-    )
-    RETURN DISTINCT recipe
-    """
-
-    case Sips.query(Sips.conn(), query, Map.put(args, :user_id, user.id)) do
+    case Repo.create_recipe(args, user.id) do
       {:ok, recipe} ->
-        recipe
-        |> hd()
-        |> flatten_node("recipe")
-        |> (&{:ok, &1}).()
+        {:ok, recipe}
 
       _ ->
         {:error, "Could not create recipe"}

@@ -1,4 +1,4 @@
-defmodule OptimalistWeb.Util do
+defmodule Optimalist.Neo4j.Util do
   @spec flatten_nodes([Sips.Response], binary | nil) :: [map]
   def flatten_nodes(nodes, key \\ nil), do: Enum.map(nodes, &flatten_node(&1, key))
 
@@ -34,5 +34,22 @@ defmodule OptimalistWeb.Util do
       end
     end)
     |> Enum.into(%{})
+  end
+
+  def merge_same_ingredients({key, ings}), do: Enum.reduce(ings, [], &reduce_ingredients/2)
+
+  def reduce_ingredients(ing, acc) do
+    converted = Measurements.convert(ing)
+
+    case(Enum.find(acc, &(Map.get(&1, :measurement) === converted.measurement))) do
+      nil ->
+        [converted | acc]
+
+      _ ->
+        acc
+        |> Enum.map(fn i ->
+          Map.update(i, :amount, 0, &(&1 + converted.amount))
+        end)
+    end
   end
 end
