@@ -42,8 +42,12 @@ defmodule Optimalist.Mixfile do
       # SMS
       {:ex_twilio, "~> 0.6.0"},
 
+      # Scraping
+      {:floki, "~> 0.20.0"},
+      {:httpoison, "~> 1.0"},
+
       # GraphQL
-      {:absinthe_plug, "~> 1.4.0"},
+      {:absinthe_plug, "~> 1.4.5"},
 
       # Neo4J
       {:bolt_sips, "~> 0.4"},

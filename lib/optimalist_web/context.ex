@@ -2,7 +2,7 @@ defmodule OptimalistWeb.Context do
   @behaviour Plug
 
   import Plug.Conn
-  alias OptimalistWeb.Resolvers
+  alias GraphQL.Resolvers
 
   def init(opts), do: opts
 

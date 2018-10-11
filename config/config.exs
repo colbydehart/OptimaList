@@ -31,7 +31,7 @@ config :bolt_sips, Bolt,
   ssl: true
 
 # Absinthe
-config :absinthe, :schema, OptimalistWeb.Schema
+config :absinthe, :schema, GraphQL.Schema
 
 # SMS
 config :ex_twilio,

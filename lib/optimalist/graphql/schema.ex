@@ -1,4 +1,7 @@
 defmodule Optimalist.GraphQL.Schema do
+  @moduledoc """
+  GraphQL schema for optimalist
+  """
   use Absinthe.Schema
 
   alias Optimalist.GraphQL.Resolvers
@@ -81,6 +84,7 @@ defmodule Optimalist.GraphQL.Schema do
       resolve(&Resolvers.recipe_detail/3)
     end
 
+    @desc "Generate an optimalist for recipes"
     field :optimalist, non_null(:optimalist_response) do
       arg(:length, non_null(:integer))
 
@@ -89,6 +93,7 @@ defmodule Optimalist.GraphQL.Schema do
   end
 
   mutation do
+    @desc "Create a recipe"
     field :create_recipe, type: :recipe do
       arg(:name, non_null(:string))
       arg(:url, :string)
@@ -97,24 +102,28 @@ defmodule Optimalist.GraphQL.Schema do
       resolve(&Mutations.create_recipe/3)
     end
 
+    @desc "Update a recipe"
     field :update_recipe, :recipe do
       arg(:recipe, non_null(:recipe_input))
 
       resolve(&Mutations.update_recipe/3)
     end
 
+    @desc "Delete a Recipe"
     field :delete_recipe, :delete_response do
       arg(:id, non_null(:id))
 
       resolve(&Mutations.delete_recipe/3)
     end
 
+    @desc "Login with mobile number"
     field :login, :login_response do
       arg(:number, non_null(:string))
 
       resolve(&Mutations.login/3)
     end
 
+    @desc "Confirm login with code"
     field(:resolve_login, :resolve_login_response) do
       arg(:code, non_null(:string))
 
