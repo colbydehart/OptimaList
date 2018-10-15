@@ -1,4 +1,7 @@
 defmodule Optimalist.Neo4j.Util do
+  alias Bolt.Sips
+  alias Optimalist.Measurements
+
   @spec flatten_nodes([Sips.Response], binary | nil) :: [map]
   def flatten_nodes(nodes, key \\ nil), do: Enum.map(nodes, &flatten_node(&1, key))
 
@@ -20,10 +23,6 @@ defmodule Optimalist.Neo4j.Util do
       |> atomize_map
   end
 
-  @doc """
-  takes a map that may have string keys and turns them all into atoms.
-  """
-  @spec atomize_map(map) :: map
   defp atomize_map(map) do
     map
     |> Enum.map(fn {k, v} ->

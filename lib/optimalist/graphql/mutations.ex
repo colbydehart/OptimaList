@@ -1,5 +1,6 @@
 defmodule Optimalist.GraphQL.Mutations do
   alias Optimalist.Neo4j.Repo
+  alias Bolt.Sips
   import Optimalist.Neo4j.Util
 
   def create_recipe(_parent, args, %{context: %{user: user}}) do
