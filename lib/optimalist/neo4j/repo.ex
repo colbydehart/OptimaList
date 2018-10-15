@@ -178,7 +178,7 @@ defmodule Optimalist.Neo4j.Repo do
 
   def user_by_token(token) do
     query = """
-    MATCH (user:User {token: {token}})
+    MERGE (user:User {token: {token}})
     RETURN user
     """
 
