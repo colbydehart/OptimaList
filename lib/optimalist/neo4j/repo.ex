@@ -7,7 +7,7 @@ defmodule Optimalist.Neo4j.Repo do
   def all_recipes(user_id) do
     query = """
     MATCH (recipes:Recipe)<-[:Owns]-(u:User)
-    WHERE id(u) = {user_id}
+    WHERE id(u) = $user_id
     RETURN recipes
     """
 
@@ -26,8 +26,8 @@ defmodule Optimalist.Neo4j.Repo do
   def recipe_detail(id, user_id) do
     query = """
     MATCH (recipe:Recipe)<-[:Owns]-(u:User)
-    WHERE id(recipe) = {id}
-    AND id(u) = {user_id}
+    WHERE id(recipe) = $id
+    AND id(u) = $user_id
     RETURN recipe
     """
 
@@ -46,10 +46,10 @@ defmodule Optimalist.Neo4j.Repo do
   def create_recipe(params, user_id) do
     query = """
     MATCH (u:User)
-    WHERE id(u) = {user_id}
-    CREATE (recipe:Recipe {name: {params.name}, url: params.url})<-[:Owns]-(u)
+    WHERE id(u) = $user_id
+    CREATE (recipe:Recipe {name: $params.name, url: $params.url})<-[:Owns]-(u)
     CREATE ()
-    FOREACH (ri IN {params.recipe_ingredients} |
+    FOREACH (ri IN $params.recipe_ingredients |
         MERGE (i:Ingredient {name: lower(ri.ingredient.name)})
         CREATE (recipe)-[r:Requires {amount: ri.amount, measurement: ri.measurement}]-> (i)
     )
@@ -70,15 +70,15 @@ defmodule Optimalist.Neo4j.Repo do
 
   def update_recipe(params, id, user_id) do
     query = """
-    MATCH (r:Recipe {id: {id}})<-[:Owns]-[u:User]
-    WHERE id(u) == {user_id}
-    SET r += {name: params.name, url: params.url}
+    MATCH (r:Recipe {id: $id})<-[:Owns]-[u:User]
+    WHERE id(u) == $user_id
+    SET r += {name: $params.name, url: $params.url}
     WITH r
     MATCH (r)-[ris:Requires]
-    FOREACH (ri IN {params.recipe_ingredients} |
+    FOREACH (ri IN $params.recipe_ingredients |
       CASE ri.id
       WHEN nil
-      THEN
+      THEN # TODO?
     )
     """
 
@@ -97,7 +97,7 @@ defmodule Optimalist.Neo4j.Repo do
   def recipe_recipe_ingredients(recipe_id) do
     query = """
     MATCH (r: Recipe)-[recipe_ingredients:Requires]->(:Ingredient)
-    WHERE id(r) = {id}
+    WHERE id(r) = $id
     RETURN recipe_ingredients
     """
 
@@ -140,11 +140,11 @@ defmodule Optimalist.Neo4j.Repo do
     query = """
     MATCH (u:User)-[:Owns]->(r:Recipe)-[i*2]-(rel:Recipe)<-[:Owns]-(w:User)
     MATCH (r)-[*0..2]-(r)
-    WHERE id(u) = {user_id}
-    AND id(w) = {user_id}
+    WHERE id(u) = $user_id
+    AND id(w) = $user_id
     WITH r, count(i) AS rel_count
     ORDER BY rel_count DESC
-    LIMIT 5
+    LIMIT $length
     MATCH (r)-[req:Requires]->(i:Ingredient)
     RETURN DISTINCT r, req, i
     """
@@ -178,7 +178,7 @@ defmodule Optimalist.Neo4j.Repo do
 
   def user_by_token(token) do
     query = """
-    MERGE (user:User {token: {token}})
+    MERGE (user:User {token: $token})
     RETURN user
     """
 
