@@ -36,7 +36,7 @@ config :logger, :console, format: "[$level] $message\n"
 
 # Bolt Sips
 config :bolt_sips, Bolt,
-  url: "test:test@localhost:7687",
+  url: "neo4j:test@localhost:7687",
   pool_size: 5,
   max_overflow: 2
 

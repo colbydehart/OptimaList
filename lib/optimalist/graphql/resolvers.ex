@@ -64,6 +64,11 @@ defmodule Optimalist.GraphQL.Resolvers do
 
   def optimalist(_, _, _), do: {:error, "unauthenticated"}
 
+  def suggestions(_, %{url: url}, %{context: %{user: _user}}),
+    do: {:ok, Optimalist.Scraper.scrape(url)}
+
+  def suggestions(_, _, _), do: {:error, "unauthenticated"}
+
   def user_by_token(token) do
     case Repo.user_by_token(token) do
       {:ok, user} ->

@@ -55,6 +55,12 @@ defmodule Optimalist.GraphQL.Schema do
     field(:message, non_null(:string))
   end
 
+  object :suggestion do
+    field(:amount, :float)
+    field(:measurement, :string)
+    field(:name, :string)
+  end
+
   input_object :recipe_input do
     field(:name, non_null(:string))
     field(:recipe_ingredients, non_null(list_of(non_null(:recipe_ingredient_input))))
@@ -69,6 +75,10 @@ defmodule Optimalist.GraphQL.Schema do
 
   input_object(:ingredient_input) do
     field(:name, non_null(:string))
+  end
+
+  input_object(:suggestion_input) do
+    field(:url, non_null(:string))
   end
 
   query do
@@ -89,6 +99,13 @@ defmodule Optimalist.GraphQL.Schema do
       arg(:length, non_null(:integer))
 
       resolve(&Resolvers.optimalist/3)
+    end
+
+    @desc "Get a suggestion of ingredients based on scraping a URL"
+    field :suggestions, non_null(list_of(non_null(:suggestion))) do
+      arg(:url, non_null(:string))
+
+      resolve(&Resolvers.suggestions/3)
     end
   end
 
