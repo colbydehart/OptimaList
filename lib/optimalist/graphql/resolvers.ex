@@ -4,6 +4,9 @@ defmodule Optimalist.GraphQL.Resolvers do
   """
   alias Optimalist.Neo4j.Repo
 
+  def me(_, %{token: token}, _), do: user_by_token(token)
+  def me(_, _, _), do: {:error, "Unauthenticated"}
+
   def all_recipes(_, _, %{context: %{user: user}}) do
     case Repo.all_recipes(user.id) do
       {:ok, recipes} ->

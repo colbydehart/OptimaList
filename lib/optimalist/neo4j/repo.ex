@@ -3,6 +3,22 @@ defmodule Optimalist.Neo4j.Repo do
   import Optimalist.Neo4j.Util
   alias Optimalist.Measurements
 
+  @doc "Fetches a user based on a user_id"
+  def get_user(user_id) do
+    query = """
+    MATCH (user:User)
+    WHERE id(user) = $user_id
+    RETURN DISTINCT user
+    """
+
+    case Sips.query(Sips.conn(), query, %{user_id: user_id}) do
+      {:ok, user} ->
+        user
+        |> flatten_nodes("user")
+        |> (&{:ok, &1}).()
+    end
+  end
+
   @doc "Fetches all recipes for the given user"
   def all_recipes(user_id) do
     query = """
@@ -138,10 +154,9 @@ defmodule Optimalist.Neo4j.Repo do
   """
   def optimalist(length, user_id) do
     query = """
-    MATCH (u:User)-[:Owns]->(r:Recipe)-[i*2]-(rel:Recipe)<-[:Owns]-(w:User)
+    MATCH (u:User)-[:Owns]->(r:Recipe)-[i*2]-(rel:Recipe)<-[:Owns]-(u:User)
     MATCH (r)-[*0..2]-(r)
     WHERE id(u) = $user_id
-    AND id(w) = $user_id
     WITH r, count(i) AS rel_count
     ORDER BY rel_count DESC
     LIMIT $length
@@ -150,10 +165,14 @@ defmodule Optimalist.Neo4j.Repo do
     """
 
     case Sips.query(Sips.conn(), query, %{length: length, user_id: user_id}) do
-      {:ok, ingredients} ->
-        recipes = flatten_nodes(ingredients, "r")
-        recipe_ingredients = flatten_nodes(ingredients, "req")
-        ingredients = flatten_nodes(ingredients, "i")
+      {:ok, res} ->
+        recipes =
+          res
+          |> flatten_nodes("r")
+          |> Enum.uniq_by(& &1.id)
+
+        recipe_ingredients = flatten_nodes(res, "req")
+        ingredients = flatten_nodes(res, "i")
 
         list =
           ingredients
@@ -168,6 +187,7 @@ defmodule Optimalist.Neo4j.Repo do
           |> Enum.group_by(& &1.name)
           |> Enum.map(&merge_same_ingredients/1)
           |> List.flatten()
+          |> Enum.map(&condense_measurements/1)
 
         {:ok, %{recipes: recipes, list: list}}
 
@@ -178,19 +198,18 @@ defmodule Optimalist.Neo4j.Repo do
 
   def user_by_token(token) do
     query = """
-    MERGE (user:User {token: $token})
+    MATCH (user:User {token: $token})
     RETURN user
     """
 
     case Sips.query(Sips.conn(), query, %{token: token}) do
-      {:ok, user} ->
+      {:ok, [user]} ->
         user
-        |> hd()
         |> flatten_node("user")
         |> (&{:ok, &1}).()
 
       error ->
-        error
+        {:error, "User not found"}
     end
   end
 end

@@ -64,9 +64,9 @@ defmodule Optimalist.GraphQL.Mutations do
       |> Enum.join()
 
     query = """
-    MERGE (user:User {number: {number}})
-    SET user.token = {token}
-    SET user.code = {code}
+    MERGE (user:User {number: $number})
+    SET user.token = $token
+    SET user.code = $code
     RETURN user
     LIMIT 1
     """

@@ -7,6 +7,11 @@ defmodule Optimalist.GraphQL.Schema do
   alias Optimalist.GraphQL.Resolvers
   alias Optimalist.GraphQL.Mutations
 
+  object :user do
+    field(:token, non_null(:string))
+    field(:id, non_null(:integer))
+  end
+
   object :recipe do
     field(:id, non_null(:id))
     field(:name, non_null(:string))
@@ -82,6 +87,13 @@ defmodule Optimalist.GraphQL.Schema do
   end
 
   query do
+    @desc "Get the current user"
+    field :me, non_null(:user) do
+      arg(:token, :string)
+
+      resolve(&Resolvers.me/3)
+    end
+
     @desc "Get all Recipes"
     field :all_recipes, non_null(list_of(non_null(:recipe))) do
       resolve(&Resolvers.all_recipes/3)

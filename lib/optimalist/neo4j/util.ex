@@ -51,4 +51,14 @@ defmodule Optimalist.Neo4j.Util do
         end)
     end
   end
+
+  def condense_measurements(ing) do
+    case ing do
+      %{measurement: "cup", amount: amount} when amount < 1 ->
+        %{ing | amount: amount / 0.0208333, measurement: "tsp"}
+
+      _ ->
+        ing
+    end
+  end
 end

@@ -3,7 +3,7 @@ defmodule Optimalist.Scraper do
   Module for scraping recipe website HTML and getting a list of ingredients back.
   """
 
-  alias Optimalist.Scraper.FoodNetwork
+  alias Optimalist.Scraper.JsonSchema
   alias Optimalist.Scraper.AllRecipes
   alias Optimalist.Scraper.Generic
   alias Optimalist.Scraper.WordPress
@@ -12,11 +12,11 @@ defmodule Optimalist.Scraper do
     with {:ok, %HTTPoison.Response{body: body}} <- HTTPoison.get(url) do
       ingredients =
         cond do
-          Regex.match?(~r/foodnetwork.com/, url) ->
-            FoodNetwork.parse(body)
-
           Regex.match?(~r/allrecipes.com/, url) ->
             AllRecipes.parse(body)
+
+          String.contains?(body, "application/ld+json") ->
+            JsonSchema.parse(body)
 
           String.contains?(body, "wprm-recipe") ->
             WordPress.parse(body)
@@ -30,7 +30,9 @@ defmodule Optimalist.Scraper do
           ingredients
 
         Enum.all?(ingredients, &is_binary/1) ->
-          get_suggestions(ingredients)
+          ingredients
+          |> Enum.map(&replace_unicode_fractions/1)
+          |> get_suggestions()
 
         true ->
           []
@@ -38,6 +40,15 @@ defmodule Optimalist.Scraper do
     else
       _ -> []
     end
+  end
+
+  defp replace_unicode_fractions(str) do
+    str
+    |> String.replace("½", "1/2")
+    |> String.replace("¾", "3/4")
+    |> String.replace("¼", "1/4")
+    |> String.replace("⅓", "1/3")
+    |> String.replace("⅔", "2/3")
   end
 
   defp get_suggestions(strings) do
