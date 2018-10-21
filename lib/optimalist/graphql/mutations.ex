@@ -88,7 +88,7 @@ defmodule Optimalist.GraphQL.Mutations do
 
   def resolve_login(_, %{code: code}, _) do
     query = """
-    MERGE (user:User {code: {code}})
+    MATCH (user:User {code: {code}})
     RETURN user
     """
 
