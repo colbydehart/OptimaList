@@ -6,7 +6,7 @@ defmodule Optimalist.GraphQL.Resolvers do
   alias Optimalist.UserCache
 
   def me(_, %{token: token}, _), do: user_by_token(token)
-  def me(_, _, _), do: {:error, "Unauthenticated"}
+  def me(_, _, _), do: {:error, "unauthenticated"}
 
   def all_recipes(_, _, %{context: %{user: user}}) do
     case Repo.all_recipes(user.id) do
@@ -79,7 +79,7 @@ defmodule Optimalist.GraphQL.Resolvers do
         {:ok, user}
 
       _ ->
-        {:error, "Could not fetch user"}
+        {:error, "unauthenticated"}
     end
   end
 end
