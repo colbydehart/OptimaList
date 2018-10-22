@@ -9,6 +9,7 @@ defmodule Optimalist.Application do
     # Define workers and child supervisors to be supervised
     children = [
       # Start the endpoint when the application starts
+      worker(Optimalist.UserCache, []),
       worker(Bolt.Sips, [Application.get_env(:bolt_sips, Bolt)]),
       supervisor(OptimalistWeb.Endpoint, [])
       # Start your own worker by calling: Optimalist.Worker.start_link(arg1, arg2, arg3)

@@ -3,6 +3,7 @@ defmodule Optimalist.GraphQL.Resolvers do
   All of the resolvers for the graphql queries
   """
   alias Optimalist.Neo4j.Repo
+  alias Optimalist.UserCache
 
   def me(_, %{token: token}, _), do: user_by_token(token)
   def me(_, _, _), do: {:error, "Unauthenticated"}
@@ -73,7 +74,7 @@ defmodule Optimalist.GraphQL.Resolvers do
   def suggestions(_, _, _), do: {:error, "unauthenticated"}
 
   def user_by_token(token) do
-    case Repo.user_by_token(token) do
+    case UserCache.user_by_token(token) do
       {:ok, user} ->
         {:ok, user}
 

@@ -61,7 +61,7 @@ defmodule Optimalist.Scraper do
       Enum.map(results, fn res ->
         %{
           name: res["name"],
-          measurement: normalize_measurement(res["unit"]),
+          measurement: normalize_measurement(res["unit"] || res["other"]),
           amount: normalize_amount(res["qty"])
         }
       end)
