@@ -68,7 +68,7 @@ defmodule Optimalist.Scraper do
     {:ok, body}
   end
 
-  defp replace_unicode_characters(str) do
+  def replace_unicode_characters(str) do
     str
     |> String.replace("½", "1/2")
     |> String.replace("¾", "3/4")
@@ -90,6 +90,7 @@ defmodule Optimalist.Scraper do
     with {:ok, %HTTPoison.Response{body: body}} <-
            HTTPoison.post(url, Poison.encode!(%{"ingredients" => strings}), headers),
          {:ok, %{"results" => results}} <- Poison.decode(body) do
+
       Enum.map(results, fn res ->
         %{
           name: res["name"],
@@ -109,6 +110,12 @@ defmodule Optimalist.Scraper do
   def normalize_amount("¼"), do: 0.25
   def normalize_amount("⅓"), do: 0.33
   def normalize_amount("⅔"), do: 0.66
+  def normalize_amount("1⁄2"), do: 0.5
+  def normalize_amount("1⁄3"), do: 0.33
+  def normalize_amount("1⁄4"), do: 0.25
+  def normalize_amount("2⁄3"), do: 0.66
+  def normalize_amount("2⁄4"), do: 0.5
+  def normalize_amount("3⁄4"), do: 0.75
   def normalize_amount("1/2"), do: 0.5
   def normalize_amount("1/4"), do: 0.25
   def normalize_amount("3/4"), do: 0.75

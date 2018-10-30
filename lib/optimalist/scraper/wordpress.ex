@@ -17,9 +17,13 @@ defmodule Optimalist.Scraper.WordPress do
           name: name,
           measurement:
             measurement
+            |> String.trim()
             |> String.downcase()
             |> Scraper.normalize_measurement(),
-          amount: Scraper.normalize_amount(amount)
+          amount:
+            amount
+            |> String.trim()
+            |> Scraper.normalize_amount()
         }
       end)
     end
