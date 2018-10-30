@@ -22,7 +22,8 @@ defmodule Optimalist.Scraper do
           String.contains?(body, "wprm-recipe") ->
             WordPress.parse(body)
 
-          String.contains?(body, "application/ld+json") && String.contains?(body, "recipeIngredient") ->
+          String.contains?(body, "application/ld+json") &&
+              String.contains?(body, "recipeIngredient") ->
             JsonSchema.parse(body)
 
           true ->
