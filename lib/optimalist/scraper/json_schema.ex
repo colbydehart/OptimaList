@@ -1,11 +1,13 @@
 defmodule Optimalist.Scraper.JsonSchema do
   def parse(html) do
     with json <- Floki.find(html, "script[type=\"application/ld+json\"]"),
-         {"script", _, [raw]} = get_first(json),
-         {:ok, %{"recipeIngredient" => ingredients}} <- Poison.decode(raw) do
+         first when not is_nil(first) <- get_first(json),
+         {"script", _, [raw]} = first,
+         {:ok, %{"recipeIngredient" => ingredients}} <- Poison.decode(raw),
+         ingredients <- handle_single_ingredient(ingredients) do
       ingredients
     else
-      _ -> []
+      _ -> Optimalist.Scraper.Generic.parse(html)
     end
   end
 
@@ -14,4 +16,12 @@ defmodule Optimalist.Scraper.JsonSchema do
   end
 
   defp get_first(script), do: script
+
+  defp handle_single_ingredient(ings) when length(ings) == 1 do
+    ings
+    |> hd()
+    |> String.split("\n")
+  end
+
+  defp handle_single_ingredient(ings), do: ings
 end

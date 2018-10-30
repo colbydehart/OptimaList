@@ -9,17 +9,21 @@ defmodule Optimalist.Scraper do
   alias Optimalist.Scraper.WordPress
 
   def scrape(url) do
-    with {:ok, %HTTPoison.Response{body: body}} <- HTTPoison.get(url) do
+    with {:ok, %HTTPoison.Response{} = response} <- HTTPoison.get(url, [], follow_redirect: true),
+         {:ok, body} <- handle_gzip(response) do
       ingredients =
         cond do
+          not String.valid?(body) ->
+            []
+
           Regex.match?(~r/allrecipes.com/, url) ->
             AllRecipes.parse(body)
 
-          String.contains?(body, "application/ld+json") ->
-            JsonSchema.parse(body)
-
           String.contains?(body, "wprm-recipe") ->
             WordPress.parse(body)
+
+          String.contains?(body, "application/ld+json") && String.contains?(body, "recipeIngredient") ->
+            JsonSchema.parse(body)
 
           true ->
             Generic.parse(body)
@@ -31,7 +35,7 @@ defmodule Optimalist.Scraper do
 
         Enum.all?(ingredients, &is_binary/1) ->
           ingredients
-          |> Enum.map(&replace_unicode_fractions/1)
+          |> Enum.map(&replace_unicode_characters/1)
           |> get_suggestions()
 
         true ->
@@ -42,13 +46,39 @@ defmodule Optimalist.Scraper do
     end
   end
 
-  defp replace_unicode_fractions(str) do
+  defp handle_gzip(res) do
+    gzipped =
+      Enum.any?(res.headers, fn kv ->
+        case kv do
+          {"Content-Encoding", "gzip"} -> true
+          {"Content-Encoding", "x-gzip"} -> true
+          _ -> false
+        end
+      end)
+
+    body =
+      if gzipped do
+        :zlib.gunzip(res.body)
+      else
+        res.body
+      end
+
+    {:ok, body}
+  end
+
+  defp replace_unicode_characters(str) do
     str
     |> String.replace("½", "1/2")
     |> String.replace("¾", "3/4")
     |> String.replace("¼", "1/4")
     |> String.replace("⅓", "1/3")
     |> String.replace("⅔", "2/3")
+    |> String.replace("–", "-")
+    |> String.normalize(:nfd)
+    |> String.codepoints()
+    |> Enum.map(&String.to_charlist/1)
+    |> Enum.reject(fn [x] -> x > 127 end)
+    |> Enum.join()
   end
 
   defp get_suggestions(strings) do
@@ -71,7 +101,7 @@ defmodule Optimalist.Scraper do
   end
 
   def normalize_amount(nil), do: 0.0
-  def normalize_amount(""), do: 1.0
+  def normalize_amount(""), do: 0.0
   def normalize_amount("½"), do: 0.5
   def normalize_amount("¾"), do: 0.75
   def normalize_amount("¼"), do: 0.25
@@ -98,7 +128,6 @@ defmodule Optimalist.Scraper do
       "gallon" -> "gallon"
       "gallons" -> "gallon"
       "g" -> "gram"
-      "gram" -> "gram"
       "liter" -> "liter"
       "litre" -> "liter"
       "ounce" -> "oz"

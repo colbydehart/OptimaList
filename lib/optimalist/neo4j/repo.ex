@@ -3,6 +3,8 @@ defmodule Optimalist.Neo4j.Repo do
   import Optimalist.Neo4j.Util
   alias Optimalist.Measurements
 
+  @excluded_ingredients ["salt", "pepper", "water", "black pepper", "sea salt"]
+
   @doc "Fetches a user based on a user_id"
   def get_user(user_id) do
     query = """
@@ -154,17 +156,22 @@ defmodule Optimalist.Neo4j.Repo do
   """
   def optimalist(length, user_id) do
     query = """
-    MATCH (u:User)-[:Owns]->(r:Recipe)-[i*2]-(rel:Recipe)<-[:Owns]-(u:User)
+    MATCH (u:User)-[:Owns]->(r:Recipe)-[i]-(ing:Ingredient)-[j]-(rel:Recipe)<-[:Owns]-(u:User)
     MATCH (r)-[*0..2]-(r)
-    WHERE id(u) = $user_id
-    WITH r, count(i) AS rel_count
+    WHERE NOT ing.name IN $excluded_ingredients
+    AND id(u) = $user_id
+    WITH r, count(i) + count(j) AS rel_count
     ORDER BY rel_count DESC
     LIMIT $length
     MATCH (r)-[req:Requires]->(i:Ingredient)
     RETURN DISTINCT r, req, i
     """
 
-    case Sips.query(Sips.conn(), query, %{length: length, user_id: user_id}) do
+    case Sips.query(Sips.conn(), query, %{
+           length: length,
+           user_id: user_id,
+           excluded_ingredients: @excluded_ingredients
+         }) do
       {:ok, res} ->
         recipes =
           res

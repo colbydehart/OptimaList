@@ -1,4 +1,7 @@
 defmodule Optimalist.Scraper.WordPress do
+  @moduledoc """
+  Scraper for wordpress recipe sites
+  """
   alias Optimalist.Scraper
 
   def parse(html) do
