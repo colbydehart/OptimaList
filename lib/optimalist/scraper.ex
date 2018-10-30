@@ -36,6 +36,7 @@ defmodule Optimalist.Scraper do
         Enum.all?(ingredients, &is_binary/1) ->
           ingredients
           |> Enum.map(&replace_unicode_characters/1)
+          |> Enum.map(&String.downcase/1)
           |> get_suggestions()
 
         true ->
