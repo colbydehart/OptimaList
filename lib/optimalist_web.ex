@@ -21,7 +21,7 @@ defmodule OptimalistWeb do
     quote do
       use Phoenix.Controller, namespace: OptimalistWeb
       import Plug.Conn
-      import OptimalistWeb.Router.Helpers
+      alias OptimalistWeb.Router.Helpers, as: Routes
       import OptimalistWeb.Gettext
     end
   end

@@ -75,6 +75,12 @@ defmodule Optimalist.Scraper do
     |> String.replace("¼", "1/4")
     |> String.replace("⅓", "1/3")
     |> String.replace("⅔", "2/3")
+    |> String.replace("1⁄4", "1/4")
+    |> String.replace("2⁄4", "2/4")
+    |> String.replace("3⁄4", "3/4")
+    |> String.replace("1⁄3", "1/3")
+    |> String.replace("2⁄3", "2/3")
+    |> String.replace("1⁄2", "1/2")
     |> String.replace("–", "-")
     |> String.normalize(:nfd)
     |> String.codepoints()
@@ -90,6 +96,7 @@ defmodule Optimalist.Scraper do
     with {:ok, %HTTPoison.Response{body: body}} <-
            HTTPoison.post(url, Poison.encode!(%{"ingredients" => strings}), headers),
          {:ok, %{"results" => results}} <- Poison.decode(body) do
+      IO.inspect(results)
 
       Enum.map(results, fn res ->
         %{
@@ -129,30 +136,28 @@ defmodule Optimalist.Scraper do
     end
   end
 
-  def normalize_measurement(msmt) do
-    case msmt do
-      "cup" -> "cup"
-      "cups" -> "cup"
-      "c" -> "cup"
-      "gallon" -> "gallon"
-      "gallons" -> "gallon"
-      "g" -> "gram"
-      "liter" -> "liter"
-      "litre" -> "liter"
-      "ounce" -> "oz"
-      "ounces" -> "oz"
-      "oz" -> "oz"
-      "pound" -> "pound"
-      "pounds" -> "pound"
-      "lb" -> "pound"
-      "lbs" -> "pound"
-      "tablespoon" -> "tbsp"
-      "tablespoons" -> "tbsp"
-      "tbsp" -> "tbsp"
-      "teaspoon" -> "tsp"
-      "teaspoons" -> "tsp"
-      "tsp" -> "tsp"
-      _ -> "unit"
-    end
-  end
+  def normalize_measurement("cup"), do: "cup"
+  def normalize_measurement("cups"), do: "cup"
+  def normalize_measurement("c"), do: "cup"
+  def normalize_measurement("gallon"), do: "gallon"
+  def normalize_measurement("gallons"), do: "gallon"
+  def normalize_measurement("g"), do: "gram"
+  def normalize_measurement("gr"), do: "gram"
+  def normalize_measurement("liter"), do: "liter"
+  def normalize_measurement("litre"), do: "liter"
+  def normalize_measurement("ounce"), do: "oz"
+  def normalize_measurement("ounces"), do: "oz"
+  def normalize_measurement("oz"), do: "oz"
+  def normalize_measurement("oz."), do: "oz"
+  def normalize_measurement("pound"), do: "pound"
+  def normalize_measurement("pounds"), do: "pound"
+  def normalize_measurement("lb"), do: "pound"
+  def normalize_measurement("lbs"), do: "pound"
+  def normalize_measurement("tablespoon"), do: "tbsp"
+  def normalize_measurement("tablespoons"), do: "tbsp"
+  def normalize_measurement("tbsp"), do: "tbsp"
+  def normalize_measurement("teaspoon"), do: "tsp"
+  def normalize_measurement("teaspoons"), do: "tsp"
+  def normalize_measurement("tsp"), do: "tsp"
+  def normalize_measurement(_), do: "unit"
 end

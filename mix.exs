@@ -33,11 +33,13 @@ defmodule Optimalist.Mixfile do
   defp deps do
     [
       # Phoenix
-      {:phoenix, "~> 1.3.2"},
+      {:phoenix, "~> 1.4.0"},
       {:phoenix_pubsub, "~> 1.0"},
-      {:cowboy, "~> 1.0"},
+      {:plug_cowboy, "~> 2.0"},
+      {:plug, "~> 1.7"},
       {:gettext, "~> 0.11"},
       {:cors_plug, "~> 1.5"},
+      {:jason, "~> 1.0"},
 
       # SMS
       {:ex_twilio, "~> 0.6.0"},

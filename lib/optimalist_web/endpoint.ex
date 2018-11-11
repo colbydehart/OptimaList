@@ -1,7 +1,8 @@
 defmodule OptimalistWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :optimalist
 
-  socket("/socket", OptimalistWeb.UserSocket)
+  socket "/socket", OptimalistWeb.UserSocket,
+    websocket: true
 
   # Serve at "/" the static files from "priv/static" directory.
   #
