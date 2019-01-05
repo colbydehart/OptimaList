@@ -1,14 +1,14 @@
 defmodule Optimalist.Neo4j.Util do
+  @moduledoc """
+  Utilities for neo4j
+  """
+
   alias Bolt.Sips
   alias Optimalist.Measurements
 
   @spec flatten_nodes([Sips.Response], binary | nil) :: [map]
   def flatten_nodes(nodes, key \\ nil), do: Enum.map(nodes, &flatten_node(&1, key))
 
-  @doc """
-  Takes in a response for a node and merges its properties with
-  its ID then atomizes the resulting map
-  """
   @spec flatten_node(Sips.Response, binary | nil) :: map
   def flatten_node(node, key \\ nil) do
     data =
@@ -17,10 +17,9 @@ defmodule Optimalist.Neo4j.Util do
         _ -> Map.get(node, key)
       end
 
-    data =
-      data.properties
-      |> Map.put("id", data.id)
-      |> atomize_map
+    data.properties
+    |> Map.put("id", data.id)
+    |> atomize_map
   end
 
   defp atomize_map(map) do
@@ -35,7 +34,7 @@ defmodule Optimalist.Neo4j.Util do
     |> Enum.into(%{})
   end
 
-  def merge_same_ingredients({key, ings}), do: Enum.reduce(ings, [], &reduce_ingredients/2)
+  def merge_same_ingredients({_key, ings}), do: Enum.reduce(ings, [], &reduce_ingredients/2)
 
   def reduce_ingredients(ing, acc) do
     converted = Measurements.convert(ing)

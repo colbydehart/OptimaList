@@ -44,7 +44,7 @@ defmodule Optimalist.GraphQL.Resolvers do
 
   def recipe_recipe_ingredients(_, _, _), do: {:error, "unauthenticated"}
 
-  def recipe_ingredient_recipe(parent, _args, %{context: %{user: user}}) do
+  def recipe_ingredient_recipe(parent, _args, %{context: %{user: _user}}) do
     case Repo.recipe_ingredient_recipe(parent.id) do
       {:ok, recipe} ->
         {:ok, recipe}

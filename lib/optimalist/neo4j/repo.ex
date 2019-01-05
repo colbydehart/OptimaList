@@ -1,11 +1,28 @@
 defmodule Optimalist.Neo4j.Repo do
   alias Bolt.Sips
   import Optimalist.Neo4j.Util
-  alias Optimalist.Measurements
 
-  @excluded_ingredients ["salt", "pepper", "water", "black pepper", "sea salt"]
+  @excluded_ingredients [
+    "salt",
+    "sea salt",
+    "pepper",
+    "black pepper",
+    "water",
+    "paprika",
+    "basil",
+    "thyme",
+    "oregano",
+    "turmeric",
+    "ginger",
+    "cumin",
+    "garlic",
+    "garlic powder",
+    "garlic salt",
+    "onion powder"
+  ]
 
   @doc "Fetches a user based on a user_id"
+  @spec get_user(integer) :: {:ok, map} | {:error, term}
   def get_user(user_id) do
     query = """
     MATCH (user:User)
@@ -13,12 +30,11 @@ defmodule Optimalist.Neo4j.Repo do
     RETURN DISTINCT user
     """
 
-    case Sips.query(Sips.conn(), query, %{user_id: user_id}) do
-      {:ok, user} ->
-        user
-        |> flatten_nodes("user")
-        |> (&{:ok, &1}).()
-    end
+    {:ok, user} = Sips.query(Sips.conn(), query, %{user_id: user_id})
+
+    user
+    |> flatten_node("user")
+    |> (&{:ok, &1}).()
   end
 
   @doc "Fetches all recipes for the given user"
